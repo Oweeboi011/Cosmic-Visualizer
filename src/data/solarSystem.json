@@ -1,0 +1,90 @@
+[
+  {
+    "name": "Mercury",
+    "type": "Terrestrial planet",
+    "description": "The smallest and innermost planet, a scorched, cratered world with almost no atmosphere and the most extreme temperature swings in the Solar System.",
+    "diameterKm": 4879,
+    "distanceFromSunAu": 0.39,
+    "moons": 0,
+    "orbitalPeriodDays": 88,
+    "dayLengthHours": 1408,
+    "funFact": "A day on Mercury (sunrise to sunrise) lasts about 176 Earth days — longer than its entire year."
+  },
+  {
+    "name": "Venus",
+    "type": "Terrestrial planet",
+    "description": "Earth's near-twin in size, shrouded in a thick, toxic atmosphere of carbon dioxide that traps heat and makes it the hottest planet in the Solar System.",
+    "diameterKm": 12104,
+    "distanceFromSunAu": 0.72,
+    "moons": 0,
+    "orbitalPeriodDays": 225,
+    "dayLengthHours": 5832,
+    "funFact": "Venus spins backwards compared to most planets, so the Sun rises in the west and sets in the east."
+  },
+  {
+    "name": "Earth",
+    "type": "Terrestrial planet",
+    "description": "Our home world, the only known planet with liquid water on its surface, a breathable atmosphere, and life.",
+    "diameterKm": 12742,
+    "distanceFromSunAu": 1.0,
+    "moons": 1,
+    "orbitalPeriodDays": 365,
+    "dayLengthHours": 24,
+    "funFact": "Earth is the only planet not named after a Greek or Roman god."
+  },
+  {
+    "name": "Mars",
+    "type": "Terrestrial planet",
+    "description": "The 'Red Planet,' colored by iron oxide (rust) on its surface, home to the largest volcano and canyon in the Solar System.",
+    "diameterKm": 6779,
+    "distanceFromSunAu": 1.52,
+    "moons": 2,
+    "orbitalPeriodDays": 687,
+    "dayLengthHours": 24.7,
+    "funFact": "Mars hosts Olympus Mons, a volcano nearly three times the height of Mount Everest."
+  },
+  {
+    "name": "Jupiter",
+    "type": "Gas giant",
+    "description": "The largest planet in the Solar System, a swirling giant of hydrogen and helium famous for its Great Red Spot, a storm that has raged for centuries.",
+    "diameterKm": 139820,
+    "distanceFromSunAu": 5.2,
+    "moons": 95,
+    "orbitalPeriodDays": 4333,
+    "dayLengthHours": 9.9,
+    "funFact": "Jupiter is so massive that its gravity helps shield the inner Solar System from many comets and asteroids."
+  },
+  {
+    "name": "Saturn",
+    "type": "Gas giant",
+    "description": "Famous for its spectacular ring system made of ice and rock, Saturn is the least dense planet in the Solar System — it would float in water.",
+    "diameterKm": 116460,
+    "distanceFromSunAu": 9.58,
+    "moons": 146,
+    "orbitalPeriodDays": 10759,
+    "dayLengthHours": 10.7,
+    "funFact": "Saturn's rings are made almost entirely of water ice, with particles ranging from dust-sized to house-sized."
+  },
+  {
+    "name": "Uranus",
+    "type": "Ice giant",
+    "description": "A pale blue-green ice giant that rotates on its side, likely the result of an ancient collision, giving it the most extreme seasons in the Solar System.",
+    "diameterKm": 50724,
+    "distanceFromSunAu": 19.2,
+    "moons": 28,
+    "orbitalPeriodDays": 30687,
+    "dayLengthHours": 17.2,
+    "funFact": "Uranus's axis is tilted about 98 degrees, so it essentially spins on its side as it orbits the Sun."
+  },
+  {
+    "name": "Neptune",
+    "type": "Ice giant",
+    "description": "The most distant planet from the Sun, a deep blue ice giant with the fastest winds in the Solar System, reaching over 2,000 km/h.",
+    "diameterKm": 49244,
+    "distanceFromSunAu": 30.1,
+    "moons": 16,
+    "orbitalPeriodDays": 60190,
+    "dayLengthHours": 16.1,
+    "funFact": "Neptune was the first planet located through mathematical prediction rather than direct observation."
+  }
+]

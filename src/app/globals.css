@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --color-space-bg: #05060f;
+  --color-space-surface: #12172b;
+  --color-space-border: #242b45;
+  --color-nebula-primary: #7c5cff;
+  --color-nebula-secondary: #38e8e0;
+  --color-alert-info: #5b9bff;
+  --color-alert-watch: #f5c451;
+  --color-alert-warning: #ff9d47;
+  --color-alert-severe: #ff5c7a;
+  --color-text-primary: #f4f5fb;
+  --color-text-muted: #9aa2c0;
+}
+
+@theme inline {
+  --color-space-bg: var(--color-space-bg);
+  --color-space-surface: var(--color-space-surface);
+  --color-space-border: var(--color-space-border);
+  --color-nebula-primary: var(--color-nebula-primary);
+  --color-nebula-secondary: var(--color-nebula-secondary);
+  --color-alert-info: var(--color-alert-info);
+  --color-alert-watch: var(--color-alert-watch);
+  --color-alert-warning: var(--color-alert-warning);
+  --color-alert-severe: var(--color-alert-severe);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-muted: var(--color-text-muted);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --shadow-glow: 0 0 40px -8px var(--color-nebula-primary);
+}
+
+body {
+  background: var(--color-space-bg);
+  color: var(--color-text-primary);
+}
+
+::selection {
+  background: var(--color-nebula-primary);
+  color: white;
+}

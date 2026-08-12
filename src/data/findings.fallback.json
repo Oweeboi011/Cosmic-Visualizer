@@ -1,0 +1,42 @@
+[
+  {
+    "id": "fallback-webb-deep-field",
+    "title": "Webb Telescope Reveals Deepest Infrared View of the Universe Yet",
+    "summary": "NASA's James Webb Space Telescope has captured its deepest and sharpest infrared image of the distant universe to date, revealing thousands of galaxies including faint structures never observed before.",
+    "link": "https://science.nasa.gov/mission/webb/",
+    "publishedAt": "2026-01-15T00:00:00.000Z",
+    "imageUrl": "https://www.nasa.gov/wp-content/uploads/2023/03/webb-first-deep-field.jpg"
+  },
+  {
+    "id": "fallback-perseverance-samples",
+    "title": "Perseverance Rover Collects Key Mars Samples for Future Return Mission",
+    "summary": "NASA's Perseverance rover has cached another set of rock and regolith samples on the Martian surface, part of a growing collection intended for eventual return to Earth for detailed laboratory analysis.",
+    "link": "https://science.nasa.gov/mission/mars-2020-perseverance/",
+    "publishedAt": "2026-01-10T00:00:00.000Z",
+    "imageUrl": "https://www.nasa.gov/wp-content/uploads/2023/03/perseverance-rover.jpg"
+  },
+  {
+    "id": "fallback-europa-clipper",
+    "title": "Europa Clipper Continues Journey to Study Icy Jovian Moon",
+    "summary": "NASA's Europa Clipper spacecraft is en route to Jupiter's moon Europa, where it will investigate whether the icy moon's subsurface ocean could hold conditions suitable for life.",
+    "link": "https://science.nasa.gov/mission/europa-clipper/",
+    "publishedAt": "2026-01-05T00:00:00.000Z",
+    "imageUrl": "https://www.nasa.gov/wp-content/uploads/2023/03/europa-clipper.jpg"
+  },
+  {
+    "id": "fallback-solar-cycle",
+    "title": "Sun Approaches Solar Maximum, Increasing Space Weather Activity",
+    "summary": "Scientists tracking the current solar cycle report increasing sunspot activity as the Sun approaches solar maximum, driving more frequent solar flares and geomagnetic storms.",
+    "link": "https://science.nasa.gov/sun/",
+    "publishedAt": "2025-12-20T00:00:00.000Z",
+    "imageUrl": "https://www.nasa.gov/wp-content/uploads/2023/03/sun-activity.jpg"
+  },
+  {
+    "id": "fallback-exoplanet-atmosphere",
+    "title": "Astronomers Detect Atmospheric Signatures on Distant Exoplanet",
+    "summary": "Using spectroscopic data, researchers have identified chemical signatures in the atmosphere of a distant exoplanet, offering new clues about planetary formation and potential habitability.",
+    "link": "https://science.nasa.gov/exoplanets/",
+    "publishedAt": "2025-12-12T00:00:00.000Z",
+    "imageUrl": "https://www.nasa.gov/wp-content/uploads/2023/03/exoplanet-atmosphere.jpg"
+  }
+]

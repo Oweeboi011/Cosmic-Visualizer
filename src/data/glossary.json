@@ -1,0 +1,262 @@
+[
+  {
+    "term": "Galaxy",
+    "definition": "A massive, gravitationally bound system of stars, stellar remnants, interstellar gas and dust, and dark matter. Galaxies range from dwarf systems with a few hundred million stars to giant ellipticals with a hundred trillion.",
+    "category": "Structures",
+    "relatedTerms": ["Milky Way", "Nebula", "Dark Matter"],
+    "simpleExplanation": "Think of a galaxy as a giant city of stars, held together by gravity. Our Sun is just one of hundreds of billions of stars living in a galaxy called the Milky Way — and the universe holds hundreds of billions of galaxies just like it.",
+    "history": "In the 1920s, astronomer Edwin Hubble proved that faint, fuzzy 'spiral nebulae' seen through telescopes were actually entire separate galaxies, far outside the Milky Way — instantly making the known universe unimaginably bigger.",
+    "funFacts": [
+      "The Milky Way and the Andromeda Galaxy are on a slow-motion collision course, expected to merge in about 4.5 billion years.",
+      "Galaxies come in three main shapes: spiral, elliptical, and irregular.",
+      "The largest known galaxy, IC 1101, is roughly 50 times the size of the Milky Way."
+    ]
+  },
+  {
+    "term": "Milky Way",
+    "definition": "The barred spiral galaxy that contains our Solar System, home to an estimated 100–400 billion stars.",
+    "category": "Structures",
+    "relatedTerms": ["Galaxy", "Spiral Galaxy"],
+    "simpleExplanation": "The Milky Way is our home galaxy — the huge, pinwheel-shaped collection of stars, planets, and dust that our Sun and Earth belong to. On a clear, dark night you can see part of it as a hazy band of light stretching across the sky.",
+    "history": "Ancient cultures around the world had their own stories for the pale band of light in the night sky; the name 'Milky Way' comes from the Greek myth of milk spilled across the heavens by the goddess Hera. Galileo was the first to show, in 1610, that the band was actually made of countless individual stars.",
+    "funFacts": [
+      "It takes our Solar System about 230 million years to orbit once around the Milky Way's center.",
+      "The Milky Way has a supermassive black hole at its center called Sagittarius A*.",
+      "You're looking toward the galaxy's crowded core when you look toward the constellation Sagittarius."
+    ]
+  },
+  {
+    "term": "Nebula",
+    "definition": "An interstellar cloud of dust, hydrogen, helium, and other ionized gases. Nebulae are often regions where new stars are being formed.",
+    "category": "Structures",
+    "relatedTerms": ["Galaxy", "Star Formation"],
+    "simpleExplanation": "A nebula is a giant cloud of gas and dust floating in space. Some nebulae are stellar nurseries where new stars are being born; others are the leftover debris from stars that have died.",
+    "history": "Before powerful telescopes, all fuzzy, non-star-like objects in the sky were called 'nebulae' (Latin for 'cloud' or 'mist') — a catch-all term that included what we now know are entire distant galaxies, until Edwin Hubble sorted the two apart in the 1920s.",
+    "funFacts": [
+      "The word 'nebula' is Latin for 'mist' or 'cloud.'",
+      "The famous 'Pillars of Creation' in the Eagle Nebula are light-years-tall towers of gas actively forming new stars.",
+      "Some nebulae glow because they're lit up by hot young stars embedded inside them."
+    ]
+  },
+  {
+    "term": "Exoplanet",
+    "definition": "A planet located outside our Solar System, typically orbiting another star. Thousands have been confirmed using methods like the transit and radial velocity techniques.",
+    "category": "Planetary Science",
+    "relatedTerms": ["Transit Method", "Habitable Zone"],
+    "simpleExplanation": "An exoplanet is simply a planet that orbits a star other than our Sun. Scientists have found thousands of them, from scorching gas giants to small rocky worlds that might resemble Earth.",
+    "history": "The first confirmed exoplanet orbiting a Sun-like star, 51 Pegasi b, was discovered in 1995 — a discovery that earned its finders the 2019 Nobel Prize in Physics and kicked off the modern era of exoplanet science.",
+    "funFacts": [
+      "Over 5,000 exoplanets have been confirmed as of the mid-2020s, with thousands more candidates awaiting confirmation.",
+      "Some exoplanets, called 'hot Jupiters,' orbit their star so closely that a year lasts only a few Earth days.",
+      "NASA's Kepler space telescope alone discovered over 2,600 confirmed exoplanets."
+    ]
+  },
+  {
+    "term": "Habitable Zone",
+    "definition": "The range of orbital distances around a star within which a planet could have surface temperatures allowing liquid water to exist — sometimes called the 'Goldilocks zone.'",
+    "category": "Planetary Science",
+    "relatedTerms": ["Exoplanet"],
+    "simpleExplanation": "The habitable zone is the 'just right' distance from a star — not so close that water boils away, not so far that it freezes solid. Earth sits comfortably inside the Sun's habitable zone, which is a big reason liquid water covers our planet.",
+    "history": "The concept dates back to the 1950s, when astronomer Su-Shu Huang first described the region around a star where a planet could sustain liquid water — the term 'Goldilocks zone,' borrowed from the children's fairy tale, became popular decades later as exoplanet science grew.",
+    "funFacts": [
+      "A star's habitable zone shifts outward as the star ages and grows brighter.",
+      "Mars sits near the outer edge of our Sun's habitable zone — it may have had liquid water billions of years ago.",
+      "Being in the habitable zone doesn't guarantee a planet has water — it just means the temperature could allow it."
+    ]
+  },
+  {
+    "term": "Coronal Mass Ejection (CME)",
+    "definition": "A significant release of plasma and magnetic field from the Sun's corona. CMEs can trigger geomagnetic storms on Earth, affecting satellites, power grids, and producing auroras.",
+    "category": "Space Weather",
+    "relatedTerms": ["Solar Flare", "Geomagnetic Storm"],
+    "simpleExplanation": "A CME is like the Sun burping out a giant bubble of super-hot, electrically charged gas. If that bubble is aimed at Earth, it can shake up our planet's magnetic field a few days later, sometimes causing beautiful auroras — or knocking out satellites and power grids.",
+    "history": "CMEs weren't directly observed until 1971, using the OSO-7 satellite's coronagraph, which blocks out the Sun's bright disk to reveal the faint corona around it — before that, scientists only knew something big was happening based on its effects on Earth.",
+    "funFacts": [
+      "A CME can carry billions of tons of solar material and travel at speeds up to several million miles per hour.",
+      "The 1859 'Carrington Event' was a CME so powerful it set telegraph equipment on fire.",
+      "NASA and NOAA constantly monitor the Sun to give days of advance warning before a CME arrives at Earth."
+    ]
+  },
+  {
+    "term": "Solar Flare",
+    "definition": "A sudden, intense burst of radiation from the Sun's surface, often associated with sunspots and classified by peak X-ray brightness (A, B, C, M, X classes, X being strongest).",
+    "category": "Space Weather",
+    "relatedTerms": ["Coronal Mass Ejection (CME)"],
+    "simpleExplanation": "A solar flare is a sudden flash of light and energy from the Sun's surface — like a giant, brief explosion of radiation. Flares travel at the speed of light, so their effects on Earth's upper atmosphere (like radio blackouts) happen almost instantly.",
+    "history": "The first solar flare ever recorded was observed independently by two astronomers, Richard Carrington and Richard Hodgson, on September 1, 1859 — the same event that produced the famous Carrington Event geomagnetic storm.",
+    "funFacts": [
+      "Solar flares are ranked by strength using letters A, B, C, M, and X — each letter is 10 times more powerful than the last.",
+      "The strongest recorded flare, in 2003, was so intense it overloaded the sensor that measured it.",
+      "Flares often occur near sunspots, cooler dark regions caused by intense magnetic activity."
+    ]
+  },
+  {
+    "term": "Geomagnetic Storm",
+    "definition": "A temporary disturbance of Earth's magnetosphere caused by solar wind and CME interactions, capable of disrupting satellites, communications, and power infrastructure.",
+    "category": "Space Weather",
+    "relatedTerms": ["Coronal Mass Ejection (CME)"],
+    "simpleExplanation": "A geomagnetic storm happens when a burst of solar wind or a CME slams into Earth's protective magnetic bubble, shaking it up. The upside is beautiful auroras that can be seen far from the poles; the downside is possible disruption to power grids, GPS, and satellites.",
+    "history": "Geomagnetic storms have been studied since the 19th century, when scientists first connected disturbances in compass needles and telegraph lines to activity on the Sun, most dramatically during the 1859 Carrington Event.",
+    "funFacts": [
+      "Geomagnetic storms are ranked on a G1 (minor) to G5 (extreme) scale by NOAA's Space Weather Prediction Center.",
+      "Strong storms can push the aurora borealis as far south as the U.S. Gulf Coast.",
+      "A severe geomagnetic storm in 1989 knocked out power to the entire Canadian province of Quebec in under two minutes."
+    ]
+  },
+  {
+    "term": "Near-Earth Object (NEO)",
+    "definition": "An asteroid or comet whose orbit brings it into proximity with Earth's orbit. NASA tracks NEOs to assess potential impact hazards.",
+    "category": "Small Bodies",
+    "relatedTerms": ["Asteroid", "Potentially Hazardous Object"],
+    "simpleExplanation": "A near-Earth object is any asteroid or comet whose path through space brings it relatively close to Earth's orbit. Most are harmless and pass by at safe distances, but scientists track them closely just in case.",
+    "history": "Systematic searches for NEOs ramped up after the 1994 impact of Comet Shoemaker-Levy 9 into Jupiter vividly demonstrated what a cosmic collision could look like, prompting NASA to launch dedicated survey programs to catalog these objects.",
+    "funFacts": [
+      "NASA has identified over 30,000 near-Earth objects and counting.",
+      "A NEO is classified as 'potentially hazardous' if it comes within about 4.6 million miles of Earth's orbit and is large enough to cause damage.",
+      "NASA's DART mission in 2022 successfully changed the orbit of an asteroid's moonlet, proving we could deflect one if needed."
+    ]
+  },
+  {
+    "term": "Asteroid",
+    "definition": "A small rocky body orbiting the Sun, most commonly found in the asteroid belt between Mars and Jupiter, ranging from a few meters to hundreds of kilometers across.",
+    "category": "Small Bodies",
+    "relatedTerms": ["Near-Earth Object (NEO)"],
+    "simpleExplanation": "Asteroids are rocky leftovers from the formation of the Solar System, about 4.6 billion years ago. Most orbit peacefully in a belt between Mars and Jupiter, like rubble that never quite formed into a planet.",
+    "history": "The first asteroid, Ceres, was discovered in 1801 by Giuseppe Piazzi, who initially thought he'd found a new planet — it's now classified as a dwarf planet, the largest object in the asteroid belt.",
+    "funFacts": [
+      "There are millions of asteroids in the main asteroid belt, but their combined mass is less than 4% of our Moon's mass.",
+      "Some asteroids have their own tiny moons.",
+      "The asteroid Vesta is bright enough to sometimes be seen with the naked eye from Earth."
+    ]
+  },
+  {
+    "term": "Dark Matter",
+    "definition": "A form of matter that does not emit, absorb, or reflect light, inferred from its gravitational effects on visible matter, radiation, and the structure of the universe. It is estimated to make up about 27% of the universe.",
+    "category": "Cosmology",
+    "relatedTerms": ["Dark Energy", "Galaxy"],
+    "simpleExplanation": "Dark matter is an invisible substance that we can't see or touch, but we know it's there because of how it pulls on things with gravity — like galaxies spinning faster than they should if only their visible stars provided the gravity holding them together.",
+    "history": "In the 1930s, astronomer Fritz Zwicky noticed galaxies in a cluster were moving too fast to be held together by their visible mass alone, coining the term 'dark matter' — but it took decades, and Vera Rubin's studies of galaxy rotation in the 1970s, for the idea to be widely accepted.",
+    "funFacts": [
+      "Dark matter makes up about five times more of the universe's mass than all the visible stars, planets, and gas combined.",
+      "Despite decades of searching, no dark matter particle has ever been directly detected.",
+      "Dark matter is 'dark' simply because it doesn't interact with light — not because it's a dark color."
+    ]
+  },
+  {
+    "term": "Dark Energy",
+    "definition": "A mysterious form of energy thought to permeate all of space and accelerate the expansion of the universe, estimated to make up roughly 68% of the total energy content of the universe.",
+    "category": "Cosmology",
+    "relatedTerms": ["Dark Matter"],
+    "simpleExplanation": "Dark energy is the name scientists give to whatever is causing the universe's expansion to speed up over time, rather than slow down. Nobody knows exactly what it is — it's one of the biggest mysteries in all of science.",
+    "history": "Dark energy was discovered in 1998 when two independent teams studying distant supernovae found that the universe's expansion was accelerating, not decelerating as everyone expected — a result so surprising it earned the 2011 Nobel Prize in Physics.",
+    "funFacts": [
+      "Dark energy makes up roughly 68% of the universe's total energy content — more than dark matter and ordinary matter combined.",
+      "The discovery of dark energy completely upended the assumption that gravity would eventually slow the universe's expansion.",
+      "Because of dark energy, most distant galaxies will eventually move away from us faster than the speed of light appears to allow (due to the expansion of space itself, not motion through it)."
+    ]
+  },
+  {
+    "term": "Light-Year",
+    "definition": "The distance light travels in one Earth year, approximately 9.46 trillion kilometers (5.88 trillion miles) — used as a unit of astronomical distance.",
+    "category": "Measurement",
+    "relatedTerms": ["Parsec"],
+    "simpleExplanation": "A light-year isn't a measure of time — it's a measure of distance. It's how far light can travel in one year, which is so incredibly far that astronomers use it instead of miles or kilometers to describe distances between stars and galaxies.",
+    "history": "The term 'light-year' emerged in the 19th century as astronomers began measuring the distances to stars using stellar parallax; German astronomer Friedrich Bessel made the first successful stellar distance measurement in 1838, for the star 61 Cygni.",
+    "funFacts": [
+      "Light travels about 186,000 miles (300,000 km) every second — fast enough to circle Earth 7.5 times in one second.",
+      "The nearest star system to our Sun, Alpha Centauri, is about 4.24 light-years away.",
+      "When you look at a star, you're seeing light that left it years, centuries, or even millennia ago."
+    ]
+  },
+  {
+    "term": "Parsec",
+    "definition": "A unit of astronomical distance equal to about 3.26 light-years, defined based on stellar parallax angle of one arcsecond.",
+    "category": "Measurement",
+    "relatedTerms": ["Light-Year"],
+    "simpleExplanation": "A parsec is another way to measure huge distances in space, equal to about 3.26 light-years. Its name comes from the method used to calculate it: 'parallax of one arcsecond' — a technique using the way nearby stars appear to shift position as Earth orbits the Sun.",
+    "history": "The parsec was proposed in 1913 by British astronomer Herbert Hall Turner as a convenient unit tied directly to the parallax measurement technique astronomers were already using to gauge stellar distances.",
+    "funFacts": [
+      "Professional astronomers often prefer parsecs over light-years because the unit connects directly to how distances are actually measured.",
+      "A kiloparsec (1,000 parsecs) and megaparsec (1 million parsecs) are used for galaxy-scale and intergalactic distances.",
+      "Despite the famous line in Star Wars calling it a unit of time, a parsec is purely a unit of distance."
+    ]
+  },
+  {
+    "term": "Redshift",
+    "definition": "The stretching of light to longer, redder wavelengths as an object moves away from an observer, used by astronomers to measure the recession velocity and distance of galaxies.",
+    "category": "Cosmology",
+    "relatedTerms": ["Dark Energy"],
+    "simpleExplanation": "Redshift is like the light version of the sound a siren makes as it drives away from you — stretched out and lower-pitched. As galaxies move away from us, their light stretches toward the red end of the spectrum, and the more it's stretched, the faster (and farther away) that galaxy is.",
+    "history": "American astronomer Vesto Slipher first measured the redshift of spiral nebulae in the 1910s; a decade later Edwin Hubble combined those measurements with distance estimates to show that nearly all galaxies are moving away from us — the first evidence the universe is expanding.",
+    "funFacts": [
+      "Redshift is how astronomers discovered the universe is expanding in the first place.",
+      "The most distant, highest-redshift galaxies we can observe show light that's been traveling toward us for over 13 billion years.",
+      "The opposite effect, blueshift, happens for objects moving toward us — the Andromeda Galaxy shows blueshift because it's heading toward the Milky Way."
+    ]
+  },
+  {
+    "term": "Black Hole",
+    "definition": "A region of spacetime where gravity is so strong that nothing, not even light, can escape. Black holes form from the collapse of massive stars or exist as supermassive objects at galactic centers.",
+    "category": "Structures",
+    "relatedTerms": ["Galaxy", "Event Horizon"],
+    "simpleExplanation": "A black hole is a place in space where gravity is so incredibly strong that nothing — not even light — can escape once it gets too close. They form when massive stars collapse in on themselves at the end of their lives.",
+    "history": "The idea of an object with escape velocity exceeding light speed dates back to 1783, but the modern concept came from Einstein's theory of general relativity in 1915; the term 'black hole' itself was popularized by physicist John Wheeler in 1967.",
+    "funFacts": [
+      "The first-ever image of a black hole's shadow, of the one in galaxy M87, was captured by the Event Horizon Telescope in 2019.",
+      "Supermassive black holes, found at the centers of most large galaxies, can be billions of times the mass of the Sun.",
+      "Time actually passes more slowly the closer you get to a black hole, an effect predicted by general relativity."
+    ]
+  },
+  {
+    "term": "Event Horizon",
+    "definition": "The boundary surrounding a black hole beyond which no light or matter can escape its gravitational pull.",
+    "category": "Structures",
+    "relatedTerms": ["Black Hole"],
+    "simpleExplanation": "The event horizon is the 'point of no return' around a black hole. Cross it, and there's no escaping — not even for light. It's not a physical surface, just an invisible boundary in space.",
+    "history": "The mathematical concept was derived by physicist Karl Schwarzschild in 1916, just months after Einstein published general relativity, when he solved Einstein's equations to describe the spacetime around a non-rotating mass.",
+    "funFacts": [
+      "The event horizon of a black hole isn't a physical wall — you could cross it without feeling anything unusual in the moment (for a large enough black hole).",
+      "The size of an event horizon is called the Schwarzschild radius, and it scales directly with the black hole's mass.",
+      "The famous 2019 Event Horizon Telescope image showed the shadow cast by the event horizon, not the event horizon itself, which by definition emits no light."
+    ]
+  },
+  {
+    "term": "Supernova",
+    "definition": "The explosive death of a star, briefly outshining an entire galaxy and dispersing heavy elements into space that seed future star and planet formation.",
+    "category": "Stellar Evolution",
+    "relatedTerms": ["Nebula", "Neutron Star"],
+    "simpleExplanation": "A supernova is the spectacular explosion that happens when certain stars reach the end of their lives. For a brief time, a single exploding star can outshine its entire home galaxy, scattering the elements that go on to form new stars, planets — and even life.",
+    "history": "One of the most famous supernovae in recorded history was observed by Chinese astronomers in 1054 AD; the expanding debris from that explosion is now known as the Crab Nebula, still visible today nearly 1,000 years later.",
+    "funFacts": [
+      "Almost all the heavy elements in your body — like calcium and iron — were forged inside stars and scattered by supernova explosions.",
+      "A supernova can briefly outshine its entire host galaxy.",
+      "The last supernova clearly visible to the naked eye in our galaxy was observed in 1604, before the invention of the telescope."
+    ]
+  },
+  {
+    "term": "Neutron Star",
+    "definition": "The extremely dense, collapsed core left behind after a massive star's supernova explosion, composed almost entirely of neutrons and often just tens of kilometers across.",
+    "category": "Stellar Evolution",
+    "relatedTerms": ["Supernova"],
+    "simpleExplanation": "A neutron star is what's left after a massive star explodes as a supernova — its core gets crushed down into an object so dense that a teaspoon of it would weigh billions of tons on Earth, packing more mass than the Sun into a sphere only about the size of a city.",
+    "history": "Neutron stars were theorized in 1934 by astronomers Walter Baade and Fritz Zwicky, just two years after the neutron itself was discovered — but it took until 1967 for one to actually be observed, when Jocelyn Bell Burnell detected the first pulsar.",
+    "funFacts": [
+      "A sugar-cube-sized amount of neutron star material would weigh about as much as a mountain.",
+      "Some neutron stars, called pulsars, spin hundreds of times per second and sweep beams of radiation past Earth like a lighthouse.",
+      "Neutron stars have the strongest magnetic fields of any known objects in the universe."
+    ]
+  },
+  {
+    "term": "Transit Method",
+    "definition": "A technique for detecting exoplanets by measuring the periodic dimming of a star's light as a planet passes in front of it from the observer's viewpoint.",
+    "category": "Planetary Science",
+    "relatedTerms": ["Exoplanet"],
+    "simpleExplanation": "The transit method finds exoplanets by watching for a tiny, regular dip in a star's brightness — caused by a planet passing directly in front of it, from our point of view, like a mini eclipse. The size and rhythm of the dip tell astronomers about the planet's size and orbit.",
+    "history": "The first exoplanet transit was detected in 1999 for the planet HD 209458 b, confirming a planet already known from radial velocity data — the technique later became the primary discovery method used by NASA's Kepler and TESS space telescopes.",
+    "funFacts": [
+      "NASA's Kepler space telescope used the transit method to discover thousands of exoplanets by staring at the same patch of sky for years.",
+      "A transit typically causes a star to dim by less than 1%, requiring extremely precise instruments to detect.",
+      "The transit method also lets scientists study an exoplanet's atmosphere, by analyzing starlight filtering through it during the transit."
+    ]
+  }
+]
