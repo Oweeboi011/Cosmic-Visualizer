@@ -12,9 +12,10 @@
 
 ## Test plan
 
-- [ ] `npm run type-check` — no errors
+- [ ] `npm run typecheck` — no errors
 - [ ] `npm run lint` — clean
-- [ ] `npm run test:unit` — all pass, coverage maintained
+- [ ] `npm test` — all pass
+- [ ] `npm run test:e2e` — all pass (if UI or routing changed)
 - [ ] Manual smoke test for changed behavior
 
 ## Notes for reviewer
