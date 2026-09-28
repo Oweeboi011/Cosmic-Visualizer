@@ -18,9 +18,9 @@ Apply the [general coding guidelines](./general-coding.instructions.md) to all c
 
 - Use functional components with hooks
 - Follow the React hooks rules (no conditional hooks)
-- Use React.FC type for components with children
+- Type props inline or with an interface; don't use `React.FC`
 - Keep components small and focused
-- Use CSS modules for component styling
+- Style with Tailwind utility classes and the theme tokens in `src/app/globals.css`
 - Develop reusable components when possible
 
 ## Test-Coverage Guidelines
@@ -33,23 +33,23 @@ Apply the [general coding guidelines](./general-coding.instructions.md) to all c
 
 ### Coverage Policy
 
-| Metric     | Minimum (enforced in `vitest.config.ts`) |
+| Metric     | Target (not yet enforced — see `docs/AUDIT.md`) |
 | ---------- | ----------------------------------------- |
 | Statements | 85 %                                       |
 | Branches   | 50 %                                       |
 | Functions  | 85 %                                       |
 | Lines      | 85 %                                       |
 
-- Enforce these thresholds in `vitest.config.ts`; CI must fail when unmet
+- Once enforced in `vitest.config.ts`, CI must fail when thresholds are unmet
 - Reject merges that reduce overall coverage
 
 ### Test-Writing Rules
 
-- Unit/component tests: put files in `__tests__/` or end with `.test.ts[x]`
-- Playwright specs: place in `e2e/` and end with `.spec.ts`
+- Unit tests: place in `tests/unit/` (mirroring `src/`) and end with `.test.ts`
+- Playwright specs: place in `tests/e2e/` and end with `.spec.ts`
 - Prefer behavioural assertions; avoid snapshots unless output is static
 - Mock external services and side-effects, not the unit under test
-- Use **msw** for HTTP mocks in unit/component tests
+- Mock HTTP in unit tests by stubbing `fetch` (`vi.stubGlobal`), as the existing tests do
 - Do not commit `.only`, `.skip`, or focussed tests
 - Keep tests deterministic; avoid real time, randomness, and live network calls
 
@@ -61,5 +61,5 @@ Apply the [general coding guidelines](./general-coding.instructions.md) to all c
 
 ## Linting and Formatting
 
-- Use ESLint (`npm run lint`) and Prettier (`npm run format`) for linting and formatting
+- Use ESLint (`npm run lint`) and TypeScript (`npm run typecheck`)
 - Ensure all linting and formatting rules pass before submitting code

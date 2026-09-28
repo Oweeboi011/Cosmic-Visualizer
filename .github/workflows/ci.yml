@@ -5,27 +5,19 @@ on:
     branches: [main]
   push:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-jobs:
-  frontend:
-    name: Frontend Quality
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: src/frontend
-    env:
-      NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: dummy
-      NEXT_PUBLIC_FIREBASE_API_KEY: dummy
-      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: dummy.firebaseapp.com
-      NEXT_PUBLIC_FIREBASE_PROJECT_ID: dummy-project
-      NEXT_PUBLIC_FIREBASE_APP_ID: "1:000000000000:web:0000000000000000"
-      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "000000000000"
-      NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: dummy-project.appspot.com
+permissions:
+  contents: read
 
+jobs:
+  quality:
+    name: Lint, typecheck, unit tests, build
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -33,83 +25,52 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: src/frontend/package-lock.json
 
       - run: npm ci
 
       - name: Lint
         run: npm run lint
 
+      # Runs `next typegen` first: tsc needs the generated route types (e.g. LayoutProps).
       - name: Type check
-        run: npm run type-check
-
-      # Layering, circular imports and the server-only credential boundary.
-      # Rules live in src/frontend/.dependency-cruiser.cjs.
-      - name: Architecture rules
-        run: npm run lint:deps
-
-      - name: Duplication
-        run: npm run lint:dup
+        run: npm run typecheck
 
       - name: Unit tests
-        run: npm run test:unit
+        run: npm test
 
       - name: Build
         run: npm run build
         env:
-          GEMINI_API_KEY: dummy
-          FIREBASE_PROJECT_ID: dummy-project
-          FIREBASE_CLIENT_EMAIL: dummy@dummy-project.iam.gserviceaccount.com
-          FIREBASE_PRIVATE_KEY: "-----BEGIN RSA PRIVATE KEY-----\ndummy\n-----END RSA PRIVATE KEY-----"
-          STRAVA_CLIENT_ID: "0"
-          STRAVA_CLIENT_SECRET: dummy
-          GOOGLE_WEATHER_API_KEY: dummy
+          # Optional: without it the app uses NASA's rate-limited DEMO_KEY.
+          NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
 
-      - name: Upload coverage
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: frontend-coverage
-          path: src/frontend/coverage/
-          retention-days: 7
-
-  backend:
-    name: Backend Quality
+  e2e:
+    name: Playwright E2E
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: src/backend
-
+    needs: quality
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-node@v6
         with:
-          python-version: "3.11"
+          node-version: 22
+          cache: npm
 
-      - uses: abatilo/actions-poetry@v3
+      - run: npm ci
 
-      - run: poetry install
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
 
-      - name: Ruff lint
-        run: poetry run ruff check .
-
-      - name: Ruff format check
-        run: poetry run ruff format --check .
-
-      - name: mypy
-        run: poetry run mypy src/
-
-      - name: Tests
-        run: poetry run pytest --cov=src --cov-report=xml -q
+      # playwright.config.ts builds and starts the app itself.
+      - name: Run E2E tests
+        run: npm run test:e2e
         env:
-          FIREBASE_PROJECT_ID: dummy-project
-          TESTING: "true"
+          NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
 
-      - name: Upload coverage
+      - name: Upload Playwright report
         uses: actions/upload-artifact@v4
-        if: always()
+        if: failure()
         with:
-          name: backend-coverage
-          path: src/backend/coverage.xml
+          name: playwright-report
+          path: playwright-report/
           retention-days: 7

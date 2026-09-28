@@ -6,15 +6,13 @@ applyTo: "**"
 
 ## Repository Structure
 
-- `src/backend/`: Logic related to the agentic AI python backend services
-- `src/frontend/`: Typescript & React frontend components and pages
-- `docs/`: Documentation
-- `docs/product_requirements_document.md`: Product requirements document
-- `docs/technical_specifications.md`: Technical specifications
+- `src/app/`: Next.js App Router pages and the single API route
+- `src/components/`: React components (feature folders plus `ui/` primitives)
+- `src/lib/`: Data-source modules (`nasa/`) and pure 3D generation code (`galaxy3d/`, `space3d/`)
+- `src/data/`: Static JSON content
+- `tests/unit/`, `tests/e2e/`: Vitest and Playwright suites
+- `docs/`: Documentation (`docs/AUDIT.md` holds the audit findings and backlog)
 - `docs/adr/`: Architecture Decision Records
-- `docs/design/`: Design documents
-- `docs/specs/`: Specifications
-- `docs/user/`: User guides
 
 ## Required before each commit
 
@@ -43,27 +41,19 @@ applyTo: "**"
 - Prefix private class members with underscore (\_)
 - Use ALL_CAPS for constants
 
-### Python
-- Use snake_case for variables, functions, and methods
-- Use PascalCase for class names
-- Use ALL_CAPS for constants
-- Prefix private class members with underscore (\_)
-- Use descriptive names for AI agents and plugins
-
 ## Error Handling
 
 ### General Principles
-- Use appropriate exception handling for each language (try/catch in TypeScript, try/except in Python)
+- Use try/catch around upstream calls and map failures to `NasaApiError`
 - Implement proper error boundaries in React components
 - Always log errors with contextual information
 - Include correlation IDs for tracing across services
 - Use structured error responses for API endpoints
 
-### AI-Specific Error Handling
-- Handle AI service timeouts and rate limiting gracefully
-- Implement fallback responses for AI failures
-- Log AI token usage and costs with errors
-- Provide user-friendly error messages for AI-related failures
+### Upstream Data Sources
+- Handle upstream timeouts and rate limiting (429) gracefully
+- Degrade per section: one failing source must not break the whole page
+- Provide user-friendly error messages that say what couldn't load
 
 ## Answering Questions
 
