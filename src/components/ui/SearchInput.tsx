@@ -8,11 +8,14 @@ export function SearchInput({
   placeholder = "Search…",
   onChange,
   debounceMs = 350,
+  label,
 }: {
   defaultValue?: string;
   placeholder?: string;
   onChange: (value: string) => void;
   debounceMs?: number;
+  /** Accessible name; defaults to the placeholder, which alone isn't a label. */
+  label?: string;
 }) {
   const [value, setValue] = useState(defaultValue);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -34,7 +37,8 @@ export function SearchInput({
         aria-hidden="true"
       />
       <input
-        type="text"
+        type="search"
+        aria-label={label ?? placeholder}
         value={value}
         onChange={(e) => handleChange(e.target.value)}
         placeholder={placeholder}

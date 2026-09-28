@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PlanetTabs, type PlanetTabKey } from "@/components/planets/PlanetTabs";
 import { SolarSystemGrid } from "@/components/planets/SolarSystemGrid";
@@ -5,6 +6,8 @@ import { ExoplanetsSection } from "@/components/research/ExoplanetsSection";
 import { GalleryCategoryPage } from "@/components/gallery/GalleryCategoryPage";
 import solarSystemData from "@/data/solarSystem.json";
 import type { SolarSystemPlanet } from "@/types/nasa";
+
+export const metadata: Metadata = { title: "Planets & Exoplanets" };
 
 function resolveTab(value: string | undefined): PlanetTabKey {
   if (value === "exoplanets" || value === "gallery") return value;

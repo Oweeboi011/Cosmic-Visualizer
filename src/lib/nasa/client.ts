@@ -2,6 +2,16 @@ import { NasaApiError } from "@/types/nasa";
 
 const NASA_API_BASE = "https://api.nasa.gov";
 
+/**
+ * Maps an upstream HTTP failure to an app-level error. 404 and 429 keep their meaning
+ * (callers render not-found / back off); everything else is a generic bad gateway.
+ */
+function upstreamError(status: number, label: string): NasaApiError {
+  if (status === 404) return new NasaApiError(`${label} returned 404`, 404, "UPSTREAM_NOT_FOUND");
+  if (status === 429) return new NasaApiError(`${label} returned 429`, 429, "UPSTREAM_RATE_LIMITED");
+  return new NasaApiError(`${label} returned ${status}`, 502, "UPSTREAM_ERROR");
+}
+
 function getApiKey(): string {
   const key = process.env.NASA_API_KEY;
   if (!key) {
@@ -55,11 +65,7 @@ export async function fetchJson<T>(url: string, options: FetchOptions): Promise<
   }
 
   if (!response.ok) {
-    throw new NasaApiError(
-      `Upstream NASA service returned ${response.status}`,
-      response.status === 429 ? 429 : 502,
-      response.status === 429 ? "UPSTREAM_RATE_LIMITED" : "UPSTREAM_ERROR"
-    );
+    throw upstreamError(response.status, "Upstream NASA service");
   }
 
   try {
@@ -80,7 +86,7 @@ export async function fetchText(url: string, options: FetchOptions): Promise<str
   }
 
   if (!response.ok) {
-    throw new NasaApiError(`Upstream service returned ${response.status}`, 502, "UPSTREAM_ERROR");
+    throw upstreamError(response.status, "Upstream service");
   }
 
   return response.text();

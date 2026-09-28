@@ -21,9 +21,10 @@ export function FindingsSourceFilter() {
   }
 
   return (
-    <div className="mb-6 flex flex-wrap gap-2">
+    <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label="News source">
       <button
         type="button"
+        aria-pressed={current === ""}
         onClick={() => setAgency("")}
         className={`rounded-full px-3 py-1.5 text-sm transition-colors ${
           current === ""
@@ -37,6 +38,7 @@ export function FindingsSourceFilter() {
         <button
           key={agency}
           type="button"
+          aria-pressed={current === agency}
           onClick={() => setAgency(agency)}
           className={`rounded-full px-3 py-1.5 text-sm transition-colors ${
             current === agency

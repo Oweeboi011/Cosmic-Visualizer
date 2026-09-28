@@ -35,7 +35,7 @@ interface RawSearchResponse {
 }
 
 function normalize(item: RawSearchItem): GalleryItem | null {
-  const data = item.data[0];
+  const data = item.data?.[0];
   if (!data) return null;
   const thumb = item.links?.find((l) => l.rel === "preview")?.href ?? null;
 

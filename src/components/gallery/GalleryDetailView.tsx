@@ -13,10 +13,13 @@ export async function GalleryDetailView({
   nasaId,
   basePath,
   backLabel,
+  showGalaxyScene = false,
 }: {
   nasaId: string;
   basePath: string;
   backLabel: string;
+  /** Only meaningful for galaxy imagery — a spiral galaxy above a Mars photo isn't. */
+  showGalaxyScene?: boolean;
 }) {
   let imageUrls: string[] = [];
   try {
@@ -30,8 +33,6 @@ export async function GalleryDetailView({
   }
 
   const primaryImage = imageUrls.find((u) => /~large|~medium/.test(u)) ?? imageUrls[0];
-  const seed = dailySeedForAsset(nasaId);
-
   return (
     <div>
       <Link
@@ -41,14 +42,19 @@ export async function GalleryDetailView({
         <ArrowLeft className="h-4 w-4" /> {backLabel}
       </Link>
 
-      <GalaxySceneLoader seed={seed} />
+      {showGalaxyScene && (
+        <div className="mb-6">
+          <GalaxySceneLoader seed={dailySeedForAsset(nasaId)} />
+        </div>
+      )}
 
-      <Card className="mt-6 overflow-hidden p-0">
+      <Card className="overflow-hidden p-0">
         {primaryImage && (
           <div className="relative aspect-video bg-space-bg">
             <Image
               src={primaryImage}
-              alt={nasaId}
+              // The asset endpoint has no title/description; see docs/AUDIT.md backlog.
+              alt={`NASA Image and Video Library image ${nasaId}`}
               fill
               sizes="100vw"
               className="object-contain"

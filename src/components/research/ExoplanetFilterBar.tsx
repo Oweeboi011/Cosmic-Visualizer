@@ -25,6 +25,7 @@ export function ExoplanetFilterBar({
 
   return (
     <select
+      aria-label="Filter by discovery method"
       value={current}
       onChange={(e) => setMethod(e.target.value)}
       className="mb-6 rounded-lg border border-space-border bg-space-surface px-3 py-2 text-sm text-text-primary focus:border-nebula-primary focus:outline-none"

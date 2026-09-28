@@ -98,7 +98,10 @@ export default async function Home() {
               <p className="mt-2 line-clamp-3 text-sm text-text-primary">{latestAlert.title}</p>
             </>
           ) : (
-            <p className="mt-2 text-sm text-text-muted">No active alerts right now.</p>
+            // `alerts` is null when DONKI failed; an empty list genuinely means no alerts.
+            <p className="mt-2 text-sm text-text-muted">
+              {alerts ? "No active alerts right now." : "Couldn't load space weather alerts right now."}
+            </p>
           )}
           <Link
             href="/alerts"
@@ -115,7 +118,9 @@ export default async function Home() {
           {latestFinding ? (
             <p className="mt-2 line-clamp-3 text-sm text-text-primary">{latestFinding.title}</p>
           ) : (
-            <p className="mt-2 text-sm text-text-muted">No findings available.</p>
+            <p className="mt-2 text-sm text-text-muted">
+              {findings ? "No findings available." : "Couldn't load the latest findings right now."}
+            </p>
           )}
           <Link
             href="/findings"

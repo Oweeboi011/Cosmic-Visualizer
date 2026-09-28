@@ -6,6 +6,9 @@ import { GalaxySceneLoader } from "@/components/galaxy3d/GalaxySceneLoader";
 import { hashStringToSeed } from "@/lib/galaxy3d/seed";
 import type { GlossaryEntry as GlossaryEntryType } from "@/types/nasa";
 
+/** Terms the 3D galaxy actually illustrates; other terms get no decorative scene. */
+const GALAXY_SCENE_TERMS = new Set(["Galaxy", "Milky Way"]);
+
 export function GlossaryDefinitionModal({
   entry,
   onClose,
@@ -20,7 +23,7 @@ export function GlossaryDefinitionModal({
       <div className="flex flex-col gap-6">
         {entry.category && <Badge tone="neutral">{entry.category}</Badge>}
 
-        <GalaxySceneLoader seed={seed} />
+        {GALAXY_SCENE_TERMS.has(entry.term) && <GalaxySceneLoader seed={seed} compact />}
 
         <section>
           <h3 className="mb-1 text-sm font-semibold text-text-primary">

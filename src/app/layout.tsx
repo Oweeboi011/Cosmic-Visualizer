@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Cosmic Visualizer",
+  title: { template: "%s | Cosmic Visualizer", default: "Cosmic Visualizer" },
   description:
     "Explore galaxies, space weather alerts, exoplanet research, and the latest findings from NASA.",
 };

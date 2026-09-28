@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -7,18 +8,20 @@ import { ErrorState } from "@/components/ui/ErrorState";
 import { getApod } from "@/lib/nasa/apod";
 import { toIsoDate } from "@/lib/utils";
 
+export const metadata: Metadata = { title: "Explorations" };
+
 export default async function ExplorationsPage({
   searchParams,
 }: {
   searchParams: Promise<{ start_date?: string; end_date?: string }>;
 }) {
   const params = await searchParams;
+  // getApod validates, orders and bounds the range (max 30 days); an omitted end date
+  // means "30 days from the start, capped at today".
   const today = new Date();
-  const defaultEnd = toIsoDate(today);
   const defaultStart = toIsoDate(new Date(today.getTime() - 13 * 24 * 60 * 60 * 1000));
-
   const startDate = params.start_date ?? defaultStart;
-  const endDate = params.end_date ?? defaultEnd;
+  const endDate = params.end_date;
 
   let items: Awaited<ReturnType<typeof getApod>> = [];
   let failed = false;

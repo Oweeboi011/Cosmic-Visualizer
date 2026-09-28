@@ -32,9 +32,26 @@ function stripHtml(html: string): string {
     .trim();
 }
 
+/** Feed content is third-party and rendered as href/src, so only allow web URLs. */
+function safeHttpUrl(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  try {
+    const url = new URL(value.trim());
+    return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function extractFirstImage(html: string): string | undefined {
   const match = html.match(/<img[^>]*\ssrc="([^"]+)"/);
-  return match?.[1];
+  return safeHttpUrl(match?.[1]);
+}
+
+/** A malformed pubDate must not throw — that would discard the agency's whole feed. */
+function toIsoOrNow(date: string | undefined): string {
+  const parsed = date ? new Date(date) : null;
+  return parsed && !Number.isNaN(parsed.getTime()) ? parsed.toISOString() : new Date().toISOString();
 }
 
 interface RawRssItem {
@@ -46,16 +63,17 @@ interface RawRssItem {
 }
 
 function normalize(item: RawRssItem, agency: FindingAgency, index: number): FindingItem | null {
-  if (!item.title || !item.link) return null;
+  const link = safeHttpUrl(item.link);
+  if (!item.title || !link) return null;
   const description = item.description ?? "";
   const guid = typeof item.guid === "string" ? item.guid : item.guid?.["#text"];
 
   return {
-    id: guid ?? `${item.link}-${index}`,
+    id: guid ?? `${link}-${index}`,
     title: stripHtml(item.title),
     summary: stripHtml(description).slice(0, 400),
-    link: item.link,
-    publishedAt: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
+    link,
+    publishedAt: toIsoOrNow(item.pubDate),
     imageUrl: extractFirstImage(description),
     source: "live",
     agency,

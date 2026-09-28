@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from "vitest";
-import { searchGallery } from "@/lib/nasa/gallery";
+import { getGalleryAsset, searchGallery } from "@/lib/nasa/gallery";
 
 function rawItem(nasaId: string, dateCreated: string) {
   return {
@@ -43,5 +43,37 @@ describe("searchGallery", () => {
 
     const { items } = await searchGallery();
     expect(items.map((i) => i.nasaId)).toEqual(["newest", "middle", "oldest"]);
+  });
+
+  it("skips items with no data block instead of crashing", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        new Response(
+          JSON.stringify({
+            collection: { items: [{ href: "x" }, rawItem("valid", "2024-01-01T00:00:00Z")] },
+          }),
+          { status: 200 }
+        )
+      )
+    );
+
+    const { items } = await searchGallery();
+    expect(items.map((i) => i.nasaId)).toEqual(["valid"]);
+  });
+});
+
+describe("getGalleryAsset", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("surfaces an unknown asset as a 404 so detail pages can render not-found", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 404 })));
+    await expect(getGalleryAsset("not-a-real-id")).rejects.toMatchObject({
+      name: "NasaApiError",
+      status: 404,
+      code: "UPSTREAM_NOT_FOUND",
+    });
   });
 });
