@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { FindingsList } from "@/components/findings/FindingsList";
 import { FindingsSourceFilter } from "@/components/findings/FindingsSourceFilter";
 import { getFindings } from "@/lib/nasa/findings";
 import type { FindingAgency } from "@/types/nasa";
+
+export const metadata: Metadata = { title: "New Findings" };
 
 const KNOWN_AGENCIES: FindingAgency[] = ["NASA", "ESA", "ESO"];
 

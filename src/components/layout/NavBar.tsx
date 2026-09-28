@@ -45,6 +45,7 @@ export function NavBar() {
               <Link
                 key={href}
                 href={href}
+                aria-current={active ? "page" : undefined}
                 className={`flex items-center gap-1.5 rounded-md px-2 py-1 transition-colors ${
                   active
                     ? "text-nebula-primary"

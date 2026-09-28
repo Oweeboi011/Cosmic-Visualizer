@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { ExoplanetsSection } from "@/components/research/ExoplanetsSection";
+
+export const metadata: Metadata = { title: "Cosmic Research" };
 
 export default async function ResearchPage({
   searchParams,

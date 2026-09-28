@@ -1,6 +1,6 @@
 import { fetchNasaApi } from "@/lib/nasa/client";
 import type { ApodItem } from "@/types/nasa";
-import { isValidDateString } from "@/lib/utils";
+import { clampDateRange, isValidDateString, toIsoDate } from "@/lib/utils";
 
 interface RawApod {
   date: string;
@@ -35,22 +35,24 @@ export interface GetApodParams {
 
 /** Max span for archive range requests, to keep payloads and upstream load bounded. */
 const MAX_RANGE_DAYS = 30;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 export async function getApod(params: GetApodParams = {}): Promise<ApodItem[]> {
   const query: Record<string, string | number | undefined> = {};
 
   if (params.count) {
     query.count = Math.min(Math.max(params.count, 1), 50);
-  } else if (params.startDate && isValidDateString(params.startDate)) {
-    query.start_date = params.startDate;
-    if (params.endDate && isValidDateString(params.endDate)) {
-      const start = new Date(params.startDate);
-      const end = new Date(params.endDate);
-      const spanDays = (end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000);
-      query.end_date = spanDays > MAX_RANGE_DAYS
-        ? new Date(start.getTime() + MAX_RANGE_DAYS * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+  } else if (params.startDate || params.endDate) {
+    // Always send a bounded, ordered range: a start date alone would make APOD return
+    // everything up to today (thousands of entries), and start > end is an upstream 400.
+    // With only a start date, anchor the window there rather than at today.
+    const endDate =
+      !isValidDateString(params.endDate) && isValidDateString(params.startDate)
+        ? toIsoDate(new Date(Math.min(Date.parse(params.startDate) + MAX_RANGE_DAYS * DAY_MS, Date.now())))
         : params.endDate;
-    }
+    const range = clampDateRange(params.startDate, endDate, MAX_RANGE_DAYS, 13);
+    query.start_date = range.startDate;
+    query.end_date = range.endDate;
   } else if (params.date && isValidDateString(params.date)) {
     query.date = params.date;
   }

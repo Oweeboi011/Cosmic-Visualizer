@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { SolarSystemPlanetModal } from "@/components/planets/SolarSystemPlanetModal";
+import { SolarSystemSceneLoader } from "@/components/space3d/SceneLoaders";
 import type { SolarSystemPlanet } from "@/types/nasa";
 
 export function SolarSystemGrid({ planets }: { planets: SolarSystemPlanet[] }) {
@@ -12,6 +13,8 @@ export function SolarSystemGrid({ planets }: { planets: SolarSystemPlanet[] }) {
 
   return (
     <div>
+      <SolarSystemSceneLoader planets={planets} onSelectPlanet={setSelectedName} />
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {planets.map((planet) => (
           <button

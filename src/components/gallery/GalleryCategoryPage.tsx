@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, type ReactNode } from "react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { GalleryFilters } from "@/components/gallery/GalleryFilters";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
@@ -25,6 +25,8 @@ export interface GalleryCategoryPageProps {
   suggestions: string[];
   searchParams: Promise<{ q?: string; page?: string }>;
   showHeader?: boolean;
+  /** Optional content rendered between the header and the search filters. */
+  intro?: ReactNode;
 }
 
 export async function GalleryCategoryPage({
@@ -36,6 +38,7 @@ export async function GalleryCategoryPage({
   suggestions,
   searchParams,
   showHeader = true,
+  intro,
 }: GalleryCategoryPageProps) {
   const params = await searchParams;
   const q = params.q ?? defaultQuery;
@@ -44,6 +47,7 @@ export async function GalleryCategoryPage({
   return (
     <div>
       {showHeader && <PageHeader title={title} description={description} />}
+      {intro}
       <GalleryFilters basePath={basePath} placeholder={placeholder} suggestions={suggestions} />
       <Suspense fallback={<LoadingSkeleton shape="card" />}>
         <GalleryResults q={q} page={page} basePath={basePath} />

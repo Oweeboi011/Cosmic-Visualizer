@@ -26,11 +26,12 @@ export function AlertFilterBar() {
   }
 
   return (
-    <div className="mb-6 flex flex-wrap gap-2">
+    <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label="Alert type">
       {TYPES.map(({ value, label }) => (
         <button
           key={value}
           type="button"
+          aria-pressed={current === value}
           onClick={() => setType(value)}
           className={`rounded-full border px-3 py-1 text-xs transition-colors ${
             current === value

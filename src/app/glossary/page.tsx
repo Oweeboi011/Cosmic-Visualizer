@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { GlossaryList } from "@/components/glossary/GlossaryList";
 import glossaryData from "@/data/glossary.json";
 import type { GlossaryEntry } from "@/types/nasa";
+
+export const metadata: Metadata = { title: "Cosmic Definitions" };
 
 export default function GlossaryPage() {
   return (

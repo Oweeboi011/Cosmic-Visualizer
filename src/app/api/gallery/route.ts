@@ -11,7 +11,10 @@ export async function GET(request: NextRequest) {
       q: searchParams.get("q") ?? undefined,
       page: parseIntParam(searchParams.get("page") ?? undefined, 1, 1, 500),
     });
-    return NextResponse.json(result);
+    // Search results change rarely; let the CDN absorb repeat queries.
+    return NextResponse.json(result, {
+      headers: { "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=3600" },
+    });
   } catch (err) {
     if (err instanceof NasaApiError) {
       return NextResponse.json(

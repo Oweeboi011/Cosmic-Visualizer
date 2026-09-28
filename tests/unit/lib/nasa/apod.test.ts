@@ -63,4 +63,35 @@ describe("getApod", () => {
       status: 502,
     });
   });
+
+  describe("date ranges", () => {
+    function requestedRange(fetchMock: ReturnType<typeof vi.fn>) {
+      const url = new URL(fetchMock.mock.calls[0][0] as string);
+      return { start: url.searchParams.get("start_date"), end: url.searchParams.get("end_date") };
+    }
+    const daysBetween = (a: string, b: string) => (Date.parse(b) - Date.parse(a)) / 86_400_000;
+
+    it("bounds a start-only range to 30 days from the start, not everything up to today", async () => {
+      const fetchMock = vi.fn(async (_url: string) => new Response("[]", { status: 200 }));
+      vi.stubGlobal("fetch", fetchMock);
+      await getApod({ startDate: "1995-06-16" });
+      expect(requestedRange(fetchMock)).toEqual({ start: "1995-06-16", end: "1995-07-16" });
+    });
+
+    it("clamps an over-long explicit range to 30 days", async () => {
+      const fetchMock = vi.fn(async (_url: string) => new Response("[]", { status: 200 }));
+      vi.stubGlobal("fetch", fetchMock);
+      await getApod({ startDate: "2020-01-01", endDate: "2021-01-01" });
+      const { start, end } = requestedRange(fetchMock);
+      expect(end).toBe("2021-01-01");
+      expect(daysBetween(start!, end!)).toBe(30);
+    });
+
+    it("reorders a reversed range instead of sending start > end upstream", async () => {
+      const fetchMock = vi.fn(async (_url: string) => new Response("[]", { status: 200 }));
+      vi.stubGlobal("fetch", fetchMock);
+      await getApod({ startDate: "2026-01-10", endDate: "2026-01-01" });
+      expect(requestedRange(fetchMock)).toEqual({ start: "2026-01-01", end: "2026-01-10" });
+    });
+  });
 });
