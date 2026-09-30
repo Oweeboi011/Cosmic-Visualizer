@@ -1,8 +1,10 @@
 import Image from "next/image";
+import { isOptimizableImage } from "@/lib/images";
 import Link from "next/link";
 import { Grid } from "@/components/ui/Grid";
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { FormattedDate } from "@/components/ui/FormattedDate";
 import type { GalleryItem } from "@/types/nasa";
 
 export function GalleryGrid({
@@ -29,7 +31,7 @@ export function GalleryGrid({
                   fill
                   sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                   className="object-cover transition-transform group-hover:scale-105"
-                  unoptimized
+                  unoptimized={!isOptimizableImage(item.thumbnailUrl)}
                 />
               )}
             </div>
@@ -37,7 +39,7 @@ export function GalleryGrid({
               <p className="line-clamp-2 text-sm font-medium text-text-primary">{item.title}</p>
               {item.dateCreated && (
                 <p className="mt-1 text-xs text-text-muted">
-                  {new Date(item.dateCreated).toLocaleDateString()}
+                  <FormattedDate value={item.dateCreated} />
                 </p>
               )}
             </div>

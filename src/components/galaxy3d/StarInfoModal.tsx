@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { isOptimizableImage } from "@/lib/images";
 import Link from "next/link";
 import { Modal } from "@/components/ui/Modal";
 import { LoadingSkeleton } from "@/components/ui/LoadingSkeleton";
@@ -78,7 +79,7 @@ export function StarInfoModal({
                       fill
                       sizes="64px"
                       className="object-cover"
-                      unoptimized
+                      unoptimized={!isOptimizableImage(item.thumbnailUrl)}
                     />
                   </div>
                 )}

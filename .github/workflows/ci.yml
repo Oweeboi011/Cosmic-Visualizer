@@ -35,8 +35,9 @@ jobs:
       - name: Type check
         run: npm run typecheck
 
-      - name: Unit tests
-        run: npm test
+      # Fails if coverage drops below the thresholds in vitest.config.mts.
+      - name: Unit tests and coverage
+        run: npm run test:coverage
 
       - name: Build
         run: npm run build

@@ -1,9 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import type { FindingAgency } from "@/types/nasa";
-
-const AGENCIES: FindingAgency[] = ["NASA", "ESA", "ESO"];
+import { FINDING_AGENCIES } from "@/types/nasa";
 
 export function FindingsSourceFilter() {
   const router = useRouter();
@@ -34,7 +32,7 @@ export function FindingsSourceFilter() {
       >
         All
       </button>
-      {AGENCIES.map((agency) => (
+      {FINDING_AGENCIES.map((agency) => (
         <button
           key={agency}
           type="button"

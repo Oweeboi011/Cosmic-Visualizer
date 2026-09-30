@@ -1,9 +1,10 @@
 import type { NextConfig } from "next";
+import { OPTIMIZED_IMAGE_HOSTS } from "./src/lib/images";
 
 /**
- * Baseline hardening headers. A Content-Security-Policy is not set yet: Next's inline
- * bootstrap scripts need nonce plumbing (see the CSP guide in Next's docs) — tracked
- * in docs/AUDIT.md. `fullscreen` is deliberately left allowed for the 3D full-window mode.
+ * Baseline hardening headers. The Content-Security-Policy needs a per-request nonce, so
+ * it's set in src/proxy.ts instead. `fullscreen` is deliberately left allowed for the 3D
+ * full-window mode.
  */
 const SECURITY_HEADERS = [
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -13,6 +14,9 @@ const SECURITY_HEADERS = [
 ];
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: OPTIMIZED_IMAGE_HOSTS.map((hostname) => ({ hostname })),
+  },
   async headers() {
     return [{ source: "/:path*", headers: SECURITY_HEADERS }];
   },

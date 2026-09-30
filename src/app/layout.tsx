@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { connection } from "next/server";
 import { NavBar } from "@/components/layout/NavBar";
 import { Footer } from "@/components/layout/Footer";
 import { Starfield } from "@/components/ui/Starfield";
@@ -21,7 +22,10 @@ export const metadata: Metadata = {
     "Explore galaxies, space weather alerts, exoplanet research, and the latest findings from NASA.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // The CSP nonce (src/proxy.ts) is per request, so no page may be prerendered.
+  await connection();
+
   return (
     <html
       lang="en"

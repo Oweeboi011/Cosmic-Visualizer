@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { isOptimizableImage } from "@/lib/images";
 import Link from "next/link";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Grid } from "@/components/ui/Grid";
 import { ErrorState } from "@/components/ui/ErrorState";
+import { FormattedDate } from "@/components/ui/FormattedDate";
 import { getApod } from "@/lib/nasa/apod";
 import { toIsoDate } from "@/lib/utils";
 
@@ -52,7 +54,7 @@ export default async function ExplorationsPage({
                     fill
                     sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                     className="object-cover"
-                    unoptimized
+                    unoptimized={!isOptimizableImage(item.url)}
                   />
                 ) : (
                   <a
@@ -66,7 +68,9 @@ export default async function ExplorationsPage({
                 )}
               </div>
               <div className="p-4">
-                <p className="text-xs text-text-muted">{item.date}</p>
+                <p className="text-xs text-text-muted">
+                  <FormattedDate value={item.date} />
+                </p>
                 <p className="mt-1 line-clamp-2 text-sm font-semibold text-text-primary">
                   {item.title}
                 </p>

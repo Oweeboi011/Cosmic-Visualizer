@@ -1,7 +1,8 @@
 import { XMLParser } from "fast-xml-parser";
 import { fetchText } from "@/lib/nasa/client";
-import { NasaApiError, type FindingItem, type FindingAgency } from "@/types/nasa";
+import { FINDING_AGENCIES, NasaApiError, type FindingItem, type FindingAgency } from "@/types/nasa";
 import fallbackData from "@/data/findings.fallback.json";
+import { stripHtml } from "@/lib/text";
 
 /**
  * Verified live at implementation time (2026-08): all three of these are standard
@@ -19,18 +20,6 @@ const AGENCY_FEEDS: Record<FindingAgency, string> = {
 const REVALIDATE_SECONDS = 6 * 60 * 60; // 6h
 
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
-
-function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&#8230;/g, "…")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&#8217;/g, "’")
-    .replace(/&#8220;|&#8221;/g, '"')
-    .replace(/\s+/g, " ")
-    .trim();
-}
 
 /** Feed content is third-party and rendered as href/src, so only allow web URLs. */
 function safeHttpUrl(value: string | undefined): string | undefined {
@@ -117,7 +106,7 @@ export interface GetFindingsParams {
 }
 
 export async function getFindings(params: GetFindingsParams = {}): Promise<FindingItem[]> {
-  const agencies = params.agency ? [params.agency] : (Object.keys(AGENCY_FEEDS) as FindingAgency[]);
+  const agencies = params.agency ? [params.agency] : FINDING_AGENCIES;
 
   const results = await Promise.allSettled(agencies.map((agency) => fetchAgencyFeed(agency)));
 

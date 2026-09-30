@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Canvas, type CanvasProps } from "@react-three/fiber";
 import { Maximize2, Minimize2 } from "lucide-react";
+import { holdBackgroundMotion } from "@/components/ui/backgroundMotion";
 
 /**
  * Canvas wrapper shared by every 3D view: a labelled container, a readable fallback
@@ -32,6 +33,8 @@ export function SceneCanvas({
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    // The scene covers the whole window, so the Starfield behind it needn't animate.
+    const releaseBackground = holdBackgroundMotion();
 
     function handleKey(e: KeyboardEvent) {
       if (e.key !== "Escape") return;
@@ -51,6 +54,7 @@ export function SceneCanvas({
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     return () => {
       document.body.style.overflow = previousOverflow;
+      releaseBackground();
       window.removeEventListener("keydown", handleKey, true);
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       if (document.fullscreenElement) document.exitFullscreen().catch(() => {});

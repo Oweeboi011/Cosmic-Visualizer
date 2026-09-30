@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { isOptimizableImage } from "@/lib/images";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { getApod } from "@/lib/nasa/apod";
@@ -7,14 +8,6 @@ import { getFindings } from "@/lib/nasa/findings";
 import { searchGallery } from "@/lib/nasa/gallery";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import type { AlertSeverity } from "@/types/nasa";
-
-const SEVERITY_TONE: Record<AlertSeverity, "info" | "watch" | "warning" | "severe"> = {
-  info: "info",
-  watch: "watch",
-  warning: "warning",
-  severe: "severe",
-};
 
 async function safe<T>(fn: () => Promise<T>): Promise<T | null> {
   try {
@@ -58,7 +51,7 @@ export default async function Home() {
                     fill
                     sizes="(min-width: 640px) 50vw, 100vw"
                     className="object-cover"
-                    unoptimized
+                    unoptimized={!isOptimizableImage(todayApod.url)}
                   />
                 ) : (
                   <div className="flex h-full min-h-64 items-center justify-center bg-space-bg text-sm text-text-muted">
@@ -93,7 +86,7 @@ export default async function Home() {
           {latestAlert ? (
             <>
               <div className="mt-2">
-                <Badge tone={SEVERITY_TONE[latestAlert.severity]}>{latestAlert.type}</Badge>
+                <Badge tone={latestAlert.severity}>{latestAlert.type}</Badge>
               </div>
               <p className="mt-2 line-clamp-3 text-sm text-text-primary">{latestAlert.title}</p>
             </>
@@ -144,7 +137,7 @@ export default async function Home() {
                     fill
                     sizes="56px"
                     className="object-cover"
-                    unoptimized
+                    unoptimized={!isOptimizableImage(img.thumbnailUrl)}
                   />
                 )}
               </div>

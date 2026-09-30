@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { FormattedDate } from "@/components/ui/FormattedDate";
 import type { NeoItem } from "@/types/nasa";
 
 export function NeoWidget({ items }: { items: NeoItem[] }) {
@@ -17,8 +18,8 @@ export function NeoWidget({ items }: { items: NeoItem[] }) {
           <div className="min-w-0">
             <p className="truncate text-sm text-text-primary">{neo.name}</p>
             <p className="text-xs text-text-muted">
-              {new Date(neo.closeApproachDate).toLocaleDateString()} ·{" "}
-              {Math.round(neo.missDistanceKm).toLocaleString()} km miss distance
+              <FormattedDate value={neo.closeApproachDate} /> ·{" "}
+              {Math.round(neo.missDistanceKm).toLocaleString("en-US")} km miss distance
             </p>
           </div>
           {neo.isPotentiallyHazardous && <Badge tone="warning">PHA</Badge>}
