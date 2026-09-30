@@ -8,7 +8,7 @@ import { Pause, Play, RotateCcw } from "lucide-react";
 import { SceneCanvas } from "@/components/space3d/SceneCanvas";
 import { PlanetBody } from "@/components/space3d/PlanetBody";
 import { useHoverCursor, usePrefersReducedMotion } from "@/components/space3d/hooks";
-import { getGlowTexture, getSunTexture } from "@/components/space3d/textures";
+import { getGlowTexture, useProceduralTexture } from "@/components/space3d/textures";
 import {
   PLANET_ORBITS,
   dateFromDaysSinceJ2000,
@@ -41,8 +41,11 @@ function SimulationClock({ daysRef, playing, speed }: { daysRef: DaysRef; playin
   return null;
 }
 
+const SUN_TEXTURE = { type: "sun", width: 512 } as const;
+
 function Sun() {
   const ref = useRef<THREE.Mesh>(null);
+  const map = useProceduralTexture(SUN_TEXTURE);
   useFrame((_, delta) => {
     if (ref.current) ref.current.rotation.y += delta * 0.05;
   });
@@ -51,7 +54,12 @@ function Sun() {
     <group>
       <mesh ref={ref}>
         <sphereGeometry args={[SUN_RADIUS, 64, 32]} />
-        <meshBasicMaterial map={getSunTexture(512)} toneMapped={false} />
+        <meshBasicMaterial
+          key={map ? "textured" : "placeholder"}
+          map={map}
+          color={map ? "#ffffff" : "#ffb347"}
+          toneMapped={false}
+        />
       </mesh>
       <sprite scale={[SUN_RADIUS * 5, SUN_RADIUS * 5, 1]}>
         <spriteMaterial

@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
+import type { AlertSeverity } from "@/types/nasa";
 
-type Tone = "info" | "watch" | "warning" | "severe" | "neutral";
+/** Alert severities double as badge tones, so an alert's severity can be passed directly. */
+type Tone = AlertSeverity | "neutral";
 
 const TONE_CLASSES: Record<Tone, string> = {
   info: "bg-alert-info/15 text-alert-info border-alert-info/30",

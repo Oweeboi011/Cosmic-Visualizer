@@ -20,7 +20,8 @@ definitions glossary. Every 3D view has a full-window mode (button top-right, Es
 
 ## Data sources
 
-- [api.nasa.gov](https://api.nasa.gov/) — APOD, DONKI, NeoWs (requires a free API key).
+- [api.nasa.gov](https://api.nasa.gov/) — APOD and NeoWs (requires a free API key).
+- [CCMC DONKI API](https://ccmc.gsfc.nasa.gov/DONKI/) — space weather notifications, keyless. (CCMC moved DONKI on 2026-09-30; the api.nasa.gov DONKI proxy now redirects to an HTML notice.)
 - [NASA Image and Video Library](https://images.nasa.gov/) — keyless.
 - [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/) — keyless.
 - [science.nasa.gov RSS feed](https://science.nasa.gov/feed/) — keyless; falls back to `src/data/findings.fallback.json` if unreachable.

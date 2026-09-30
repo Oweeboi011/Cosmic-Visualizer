@@ -12,9 +12,9 @@ will hit · **P2** improvement / backlog.
 
 | | Found | Fixed | Backlog |
 | --- | --- | --- | --- |
-| P0 | 4 | 4 | 0 |
+| P0 | 5 | 5 | 0 |
 | P1 | 13 | 13 | 0 |
-| P2 | 17 | 0 | 17 |
+| P2 | 17 | 17 | 0 |
 
 Baseline before fixes: lint, typecheck, 51 unit tests, build, and 19 e2e tests all passed
 locally; `npm audit --omit=dev` reported 0 vulnerabilities. The defects below are ones those
@@ -101,43 +101,47 @@ the error boundary.
 - **Accessibility:** `SceneCanvas` put `role="img"` on the element that wrapped interactive overlays. It now sits only on the canvas.
 - **Tests:** the e2e canvas locator was ambiguous with the site-wide Starfield canvas.
 
-## P2 — backlog (not changed)
+## Follow-up (2026-10-01)
 
-**Performance**
-1. **Images are unoptimized everywhere** (`unoptimized` on every `next/image`). `/explorations` downloads ~14 full-resolution APOD images (often 1–3 MB each). Add `images.remotePatterns` for the NASA hosts and drop `unoptimized`.
-2. **Procedural planet textures run on the main thread.** ~860 ms for five textures; opening Earth (1024px surface + clouds) stalls a few hundred ms, once per session. Move to a Web Worker or use 512px.
-3. **`Starfield` keeps animating** behind 3D scenes (including full window). It's also not DPR-scaled (blurry on HiDPI) and regenerates every star on each resize.
+### P0 — DONKI moved; Alerts were broken
+CCMC moved DONKI off `kauai.ccmc.gsfc.nasa.gov` on 2026-09-30. `api.nasa.gov/DONKI/*` still
+proxies the old host and now returns a 301 to an HTML notice, so `/alerts` and the home
+"Latest cosmic alert" card showed only errors.
 
-**Security**
+**Fix**
+- `getAlerts` calls the new keyless API, `https://ccmc.gsfc.nasa.gov/DONKI-API/get/notifications`.
+  The parameters and schema are unchanged.
+- The new API currently returns every `messageBody` as `"## "`. Titles now fall back to a
+  readable type name, e.g. "Coronal mass ejection", instead of "CME notification".
 
-4. **No Content-Security-Policy.** Next's inline bootstrap scripts need nonce plumbing; see `node_modules/next/dist/docs/01-app/02-guides/content-security-policy.md`.
+### P2 backlog — all fixed
 
-**UX**
+| # | Item | Fix |
+| --- | --- | --- |
+| 1 | Unoptimized images | `images.remotePatterns` for `**.nasa.gov`, `www.esa.int`, `**.eso.org` (`src/lib/images.ts`, shared with `next.config.ts`). Every `next/image` optimizes those hosts; feed images from other hosts stay unoptimized. Asset URLs are upgraded from `http://` to `https://`. |
+| 2 | Planet textures on the main thread | Planet, cloud and Sun textures are generated in a Web Worker (`texture.worker.ts`, `useProceduralTexture`). A plain placeholder material shows until a texture arrives. |
+| 3 | Starfield cost | Pauses while a 3D scene is in full window (`backgroundMotion.ts`). Uses devicePixelRatio, capped at 2. A resize now rescales the existing stars instead of regenerating them. |
+| 4 | No CSP | Nonce-based CSP in `src/proxy.ts` (`src/lib/csp.ts`). Scripts need the nonce plus `'strict-dynamic'`. `style-src` keeps `'unsafe-inline'` because React `style` attributes can't carry a nonce. The root layout calls `connection()`, so every page renders dynamically. Upstream data is still cached by `fetch` revalidation. |
+| 5 | No gallery pagination | Previous/next links with "Page N of M", preserving `q`/`tab`. The page is capped at the API's 100-page limit. |
+| 6 | Detail pages had no metadata | `getGalleryItem` searches by `nasa_id`. The page shows the title, date, center, description and keywords, and the tab uses the image title (`generateMetadata`). |
+| 7 | Not-found returned 200 | The list pages' `loading.tsx` (and the home page's) moved into route groups (`(home)`, `galaxies/(list)`, …). Detail pages are no longer under a Suspense boundary, so `notFound()` returns a real 404. Trade-off: detail pages have no loading skeleton. |
+| 8 | Server-timezone dates | `formatUtcDate` / `<FormattedDate>`: a fixed `en-US` locale, UTC, a `<time dateTime>` element, and a "UTC" label on timestamps. |
+| 9 | No mobile nav | Below `lg`, the links sit behind a menu button (`aria-expanded`). The menu closes on navigation, on link click, and on Escape, and Escape returns focus to the button. |
+| 10 | DONKI severity substring match | Whole-token regexes. NOAA scale levels follow NOAA's wording: 1–2 watch, 3 warning, 4–5 severe. R3 was previously severe. X/M flare classes also match, and words match case-insensitively. |
+| 11 | Partial entity decoding | `decodeHtmlEntities` (`src/lib/text.ts`) handles common named entities and any decimal or hex reference in a single pass. Gallery descriptions are stripped the same way. |
+| 12 | Duplicate constants | `FINDING_AGENCIES` lives in `types/nasa.ts`. Badge tones include `AlertSeverity`, so the identity maps are gone. |
+| 13 | Unused `ApiErrorBody` | Removed. |
+| 14 | Coverage | Coverage now includes `src/lib/**` and the jsdom-testable components. Thresholds are 85/50/85/85 (currently ~91/80/89/92). `npm run test:coverage` runs in CI. Tests were added for utils, text, images, CSP, DONKI, gallery, textures, and components (Testing Library). |
+| 15 | Vitest CJS warning | Renamed to `vitest.config.mts`. |
+| 16 | Outdated minors | three 0.186 with `@types/three` 0.186, `@react-three/fiber` 9.8, drei 10.7.9, and lucide-react 1.49. |
+| 17 | Starter assets | `public/*.svg` removed. |
 
-5. **Gallery has no pagination UI** even though `?page=` is supported.
-6. **Gallery detail pages show no title or description**, only the asset ID. The asset endpoint lacks metadata, so this needs a search-by-id or metadata fetch.
-7. **Not-found detail pages return HTTP 200.** `loading.tsx` makes the route stream, so `notFound()` runs after headers are sent. The page is correct, but crawlers see 200 plus `noindex`.
-8. **Dates are formatted on the server** (`toLocaleString` in Server Components) in the server's timezone, with no label.
-9. **No mobile navigation.** Nine nav links wrap into several rows on phones.
+**Known local-only behaviour**: on networks using NAT64 (addresses under `64:ff9b::/96`),
+Next's image optimizer classifies the resolved address as private. It then refuses
+`www.esa.int` and `science.nasa.gov` images with a 400. Public deployments resolve these
+hosts to ordinary public IPs. Don't set `dangerouslyAllowLocalIP` to work around this.
 
-**Data quality**
-
-10. **DONKI severity is a substring match.** E.g. "R1" matches inside other tokens; "X-class" is case-sensitive.
-11. **`stripHtml` decodes only a handful of HTML entities.** Others (`&#8211;`, `&quot;`, …) show raw.
-
-**Code health**
-
-12. **Duplicate constants:** identity `SEVERITY_TONE` maps in `page.tsx` and `AlertTimeline.tsx`; `KNOWN_AGENCIES` in the findings page and (formerly) the API route.
-13. **Unused type:** `ApiErrorBody` in `src/types/nasa.ts` is now unused.
-
-**Testing and tooling**
-
-14. **Coverage:** measured only for `src/lib/nasa`, with no thresholds enforced. There are no tests for `src/lib/utils.ts` or any component.
-15. **Vitest config warning:** `vitest.config.ts` is loaded as CJS; rename it to `.mts` or set `"type": "module"`.
-16. **Outdated minors:** three 0.176 → 0.186 (bump together with `@types/three`), `@react-three/fiber`, drei, lucide-react.
-17. **Starter assets:** `public/*.svg` (Next starter icons) are unused.
-
-## How this was verified
+## How this was verified (2026-09-28)
 
 - `npm run lint`, `npm run typecheck` (also from a clean state without `.next/`),
   `npm test` (58 passing), and `npm run build` (only `/api/gallery` remains).
@@ -152,3 +156,14 @@ the error boundary.
 - Workflow files parse as YAML; `grep` finds no remaining `src/frontend`, `poetry`,
   `firebase` or `strava` references in `.github/`. The new CI has not yet run on GitHub
   (it runs on the next push/PR).
+
+Follow-up (2026-10-01):
+- `npm run lint`, `npm run typecheck`, and `npm run test:coverage`: 121 tests, thresholds met.
+- `npm run build`: every route is dynamic.
+- `npx playwright test`: 23/23. New tests cover the CSP nonce, the real 404, pagination,
+  and the phone menu.
+- Browser checks against `next start`:
+  - no CSP violations on any page
+  - the texture worker starts
+  - Starfield repaints drop from ~27/s to 0 in full window
+  - the phone canvas is backed at 2x DPR

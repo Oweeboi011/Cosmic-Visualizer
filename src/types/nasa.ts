@@ -71,7 +71,9 @@ export interface ExoplanetItem {
   distanceParsecs: number | null;
 }
 
-export type FindingAgency = "NASA" | "ESA" | "ESO";
+export const FINDING_AGENCIES = ["NASA", "ESA", "ESO"] as const;
+
+export type FindingAgency = (typeof FINDING_AGENCIES)[number];
 
 export interface FindingItem {
   id: string;
@@ -104,11 +106,4 @@ export interface GlossaryEntry {
   simpleExplanation?: string;
   history?: string;
   funFacts?: string[];
-}
-
-export interface ApiErrorBody {
-  error: {
-    message: string;
-    code: string;
-  };
 }

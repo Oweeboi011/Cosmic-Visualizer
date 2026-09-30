@@ -1,13 +1,7 @@
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
-import type { AlertItem, AlertSeverity } from "@/types/nasa";
-
-const SEVERITY_TONE: Record<AlertSeverity, "info" | "watch" | "warning" | "severe"> = {
-  info: "info",
-  watch: "watch",
-  warning: "warning",
-  severe: "severe",
-};
+import { FormattedDate } from "@/components/ui/FormattedDate";
+import type { AlertItem } from "@/types/nasa";
 
 export function AlertTimeline({ items }: { items: AlertItem[] }) {
   if (items.length === 0) {
@@ -22,9 +16,9 @@ export function AlertTimeline({ items }: { items: AlertItem[] }) {
           className="rounded-lg border border-space-border bg-space-surface/60 p-4"
         >
           <div className="flex flex-wrap items-center gap-2">
-            <Badge tone={SEVERITY_TONE[item.severity]}>{item.type}</Badge>
+            <Badge tone={item.severity}>{item.type}</Badge>
             <span className="text-xs text-text-muted">
-              {new Date(item.issuedAt).toLocaleString()}
+              <FormattedDate value={item.issuedAt} withTime />
             </span>
           </div>
           <p className="mt-2 text-sm font-medium text-text-primary">{item.title}</p>

@@ -33,19 +33,19 @@ Apply the [general coding guidelines](./general-coding.instructions.md) to all c
 
 ### Coverage Policy
 
-| Metric     | Target (not yet enforced — see `docs/AUDIT.md`) |
+| Metric     | Threshold (enforced in CI)                |
 | ---------- | ----------------------------------------- |
 | Statements | 85 %                                       |
 | Branches   | 50 %                                       |
 | Functions  | 85 %                                       |
 | Lines      | 85 %                                       |
 
-- Once enforced in `vitest.config.ts`, CI must fail when thresholds are unmet
+- Enforced by `npm run test:coverage` via `vitest.config.mts`; CI fails when thresholds are unmet
 - Reject merges that reduce overall coverage
 
 ### Test-Writing Rules
 
-- Unit tests: place in `tests/unit/` (mirroring `src/`) and end with `.test.ts`
+- Unit tests: place in `tests/unit/` (mirroring `src/`) and end with `.test.ts`; component tests end with `.test.tsx` and start with a `// @vitest-environment jsdom` docblock
 - Playwright specs: place in `tests/e2e/` and end with `.spec.ts`
 - Prefer behavioural assertions; avoid snapshots unless output is static
 - Mock external services and side-effects, not the unit under test

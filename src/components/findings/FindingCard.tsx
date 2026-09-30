@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { isOptimizableImage } from "@/lib/images";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { FormattedDate } from "@/components/ui/FormattedDate";
 import type { FindingItem } from "@/types/nasa";
 
 export function FindingCard({ item }: { item: FindingItem }) {
@@ -15,7 +17,7 @@ export function FindingCard({ item }: { item: FindingItem }) {
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
               className="object-cover"
-              unoptimized
+              unoptimized={!isOptimizableImage(item.imageUrl)}
             />
           </div>
         )}
@@ -27,7 +29,7 @@ export function FindingCard({ item }: { item: FindingItem }) {
           <p className="line-clamp-2 text-sm font-semibold text-text-primary">{item.title}</p>
           <p className="line-clamp-3 flex-1 text-xs text-text-muted">{item.summary}</p>
           <p className="text-xs text-text-muted">
-            {new Date(item.publishedAt).toLocaleDateString()}
+            <FormattedDate value={item.publishedAt} />
           </p>
         </div>
       </Card>

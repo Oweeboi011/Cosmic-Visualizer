@@ -53,3 +53,24 @@ export function parseIntParam(
   if (Number.isNaN(parsed)) return fallback;
   return clampNumber(parsed, min, max);
 }
+
+// Dates render in Server Components, so an unpinned formatter would use the server's
+// timezone and locale. Pin both: date-only values (YYYY-MM-DD from NASA) are UTC dates,
+// and timestamps are shown in UTC with the zone labelled.
+const DATE_FORMAT = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeZone: "UTC" });
+const DATE_TIME_FORMAT = new Intl.DateTimeFormat("en-US", {
+  dateStyle: "medium",
+  timeStyle: "short",
+  timeZone: "UTC",
+  hourCycle: "h23",
+});
+
+/**
+ * "Sep 2, 2026", or "Sep 2, 2026, 12:23 UTC" with `withTime`. Returns null for
+ * unparseable input so callers can fall back to the raw value.
+ */
+export function formatUtcDate(value: string, withTime = false): string | null {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return withTime ? `${DATE_TIME_FORMAT.format(date)} UTC` : DATE_FORMAT.format(date);
+}

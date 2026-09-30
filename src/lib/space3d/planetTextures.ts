@@ -256,3 +256,26 @@ export function generateRingTexture(kind: RingKind, width: number): TextureData 
 
   return { data, width, height: 1 };
 }
+
+/** A serializable description of one texture, so it can be generated in a Web Worker. */
+export type TextureRequest =
+  | { type: "planet"; kind: SurfaceKind; width: number }
+  | { type: "clouds"; width: number }
+  | { type: "sun"; width: number };
+
+export function textureKey(request: TextureRequest): string {
+  return request.type === "planet"
+    ? `planet:${request.kind}:${request.width}`
+    : `${request.type}:${request.width}`;
+}
+
+export function generateTexture(request: TextureRequest): TextureData {
+  switch (request.type) {
+    case "planet":
+      return generatePlanetTexture(request.kind, request.width);
+    case "clouds":
+      return generateCloudTexture(request.width);
+    case "sun":
+      return generateSunTexture(request.width);
+  }
+}

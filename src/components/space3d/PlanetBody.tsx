@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useFrame, type ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
 import { getPlanetAppearance, type RingKind } from "@/lib/space3d/planetAppearance";
-import { getCloudTexture, getPlanetTexture, getRingTexture } from "@/components/space3d/textures";
+import { getRingTexture, useProceduralTexture } from "@/components/space3d/textures";
 
 const ATMOSPHERE_VERTEX = /* glsl */ `
 varying vec3 vNormal;
@@ -25,6 +25,8 @@ void main() {
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }`;
+
+const PLACEHOLDER_COLOR = "#4a4f5c";
 
 function Atmosphere({ radius, color, intensity }: { radius: number; color: string; intensity: number }) {
   const uniforms = useMemo(
@@ -108,14 +110,9 @@ export function PlanetBody({
   const surfaceRef = useRef<THREE.Mesh>(null);
   const cloudsRef = useRef<THREE.Mesh>(null);
 
-  const map = useMemo(
-    () => getPlanetTexture(appearance.surface, textureWidth),
-    [appearance.surface, textureWidth]
-  );
-  const cloudMap = useMemo(
-    () => (appearance.clouds ? getCloudTexture(textureWidth) : null),
-    [appearance.clouds, textureWidth]
-  );
+  // Generated in a worker; until then the surface is a plain placeholder and clouds are off.
+  const map = useProceduralTexture({ type: "planet", kind: appearance.surface, width: textureWidth });
+  const cloudMap = useProceduralTexture(appearance.clouds ? { type: "clouds", width: textureWidth } : null);
 
   useFrame((_, delta) => {
     if (surfaceRef.current) surfaceRef.current.rotation.y += spinRate * delta;
@@ -141,7 +138,14 @@ export function PlanetBody({
     <group rotation={[THREE.MathUtils.degToRad(appearance.axialTiltDeg), 0, 0]} {...handlers}>
       <mesh ref={surfaceRef}>
         <sphereGeometry args={[radius, 64, 32]} />
-        <meshStandardMaterial map={map} roughness={0.95} metalness={0} />
+        {/* Keyed so three.js compiles a textured program once the map arrives. */}
+        <meshStandardMaterial
+          key={map ? "textured" : "placeholder"}
+          map={map}
+          color={map ? "#ffffff" : PLACEHOLDER_COLOR}
+          roughness={0.95}
+          metalness={0}
+        />
       </mesh>
 
       {cloudMap && (
