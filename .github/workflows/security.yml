@@ -24,7 +24,7 @@ jobs:
           node-version: 22
 
       - name: npm audit (production dependencies)
-        run: npm audit --omit=dev --audit-level=high
+        run: npm run audit:prod
 
   secret-scan:
     name: Secret Scan

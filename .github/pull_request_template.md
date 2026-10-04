@@ -1,22 +1,15 @@
 ## Summary
 
 <!-- What does this PR do? 1-3 bullets. -->
+
 -
 
-## Type of change
+## Checklist
 
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Refactor / cleanup
-- [ ] Docs / config / CI
-
-## Test plan
-
-- [ ] `npm run typecheck` — no errors
-- [ ] `npm run lint` — clean
-- [ ] `npm test` — all pass
-- [ ] `npm run test:e2e` — all pass (if UI or routing changed)
-- [ ] Manual smoke test for changed behavior
+- [ ] `npm run verify` passes (lint, types, architecture, duplication, dead code, secrets, tests)
+- [ ] `npm run test:e2e` passes, if UI or routing changed
+- [ ] Reused `src/components/ui` instead of copying markup
+- [ ] Docs touched where behavior changed: guide, solution plan, or a new ADR for a decision
 
 ## Notes for reviewer
 

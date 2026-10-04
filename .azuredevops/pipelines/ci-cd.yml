@@ -1,0 +1,99 @@
+# Azure DevOps CI/CD — STAGED, NOT ENABLED.
+#
+# Deploys run manually with `azd deploy` for now (docs/solution-plan/delivery.md). This
+# pipeline automates the same steps. It does nothing until someone enables it:
+#   1. Create the pipeline in ADO from this file.
+#   2. Create an Azure Resource Manager service connection (workload identity federation)
+#      and set the variables below in a variable group named `cosmic-visualizer`.
+#   3. Remove `trigger: none` / `pr: none` (and disable GitHub CI if ADO becomes the gate).
+# Decision record: docs/adr/0006-ci-cd-github-now-ado-staged.md
+
+trigger: none
+pr: none
+
+variables:
+  - group: cosmic-visualizer # AZURE_SERVICE_CONNECTION, AZURE_ENV_NAME, AZURE_LOCATION, AZURE_SUBSCRIPTION_ID, NASA_API_KEY
+  - name: NODE_VERSION
+    value: "22.x"
+  - name: npm_config_cache
+    value: $(Pipeline.Workspace)/.npm
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Verify
+    displayName: Verify
+    jobs:
+      - job: Verify
+        displayName: Static checks, tests, build
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(NODE_VERSION)
+          - task: Cache@2
+            inputs:
+              key: 'npm | "$(Agent.OS)" | package-lock.json'
+              path: $(npm_config_cache)
+          - script: npm ci
+            displayName: Install
+          # Same single gate as GitHub CI: lint, typecheck, architecture, duplication,
+          # dead code, secrets, unit/component/integration tests with coverage.
+          - script: npm run verify
+            displayName: Verify
+          - script: npm run test:perf
+            displayName: Performance budgets
+          - script: npm run audit:prod
+            displayName: Dependency audit (production)
+          - script: npm run build
+            displayName: Build
+            env:
+              NASA_API_KEY: $(NASA_API_KEY)
+
+      - job: E2E
+        displayName: Playwright E2E
+        dependsOn: Verify
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(NODE_VERSION)
+          - script: npm ci && npx playwright install --with-deps chromium
+            displayName: Install
+          - script: npm run test:e2e
+            displayName: E2E
+            env:
+              CI: "true"
+              NASA_API_KEY: $(NASA_API_KEY)
+          - task: PublishPipelineArtifact@1
+            condition: failed()
+            inputs:
+              targetPath: playwright-report
+              artifact: playwright-report
+
+  - stage: Deploy
+    displayName: Deploy (azd)
+    dependsOn: Verify
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: Deploy
+        environment: cosmic-visualizer-prod # add approvals/checks on this ADO environment
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - script: curl -fsSL https://aka.ms/install-azd.sh | bash
+                  displayName: Install azd
+                - script: azd config set auth.useAzCliAuth "true"
+                  displayName: Use the service connection's Azure CLI login
+                - task: AzureCLI@2
+                  displayName: azd deploy
+                  inputs:
+                    azureSubscription: $(AZURE_SERVICE_CONNECTION)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: azd deploy --no-prompt
+                  env:
+                    AZURE_ENV_NAME: $(AZURE_ENV_NAME)
+                    AZURE_LOCATION: $(AZURE_LOCATION)
+                    AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)

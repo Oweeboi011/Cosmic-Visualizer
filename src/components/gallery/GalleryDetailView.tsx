@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import { isOptimizableImage } from "@/lib/images";
+import { RemoteImage } from "@/components/ui/RemoteImage";
+import { ExternalLink } from "@/components/ui/ExternalLink";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -79,52 +79,59 @@ export async function GalleryDetailView({
       <Card className="overflow-hidden p-0">
         {primaryImage && (
           <div className="relative aspect-video bg-space-bg">
-            <Image
+            <RemoteImage
               src={primaryImage}
               alt={title}
               fill
               sizes="(min-width: 1152px) 1152px, 100vw"
               className="object-contain"
-              unoptimized={!isOptimizableImage(primaryImage)}
             />
           </div>
         )}
         <div className="p-6">
           <Badge tone="info">NASA Image and Video Library</Badge>
           <h1 className="mt-3 text-2xl font-semibold text-text-primary">{title}</h1>
-          <p className="mt-1 text-xs text-text-muted">
-            {item?.dateCreated && (
-              <>
-                <FormattedDate value={item.dateCreated} /> ·{" "}
-              </>
-            )}
-            {item?.center && <>{item.center} · </>}
-            Asset ID: {nasaId}
-          </p>
-          {item?.description && (
-            <p className="mt-4 text-sm leading-relaxed text-text-muted">
-              {item.description}
-            </p>
-          )}
-          {item && item.keywords.length > 0 && (
-            <ul className="mt-4 flex flex-wrap gap-2" aria-label="Keywords">
-              {item.keywords.slice(0, 12).map((keyword) => (
-                <li key={keyword}>
-                  <Badge>{keyword}</Badge>
-                </li>
-              ))}
-            </ul>
-          )}
-          <a
+          {item ? <ItemDetails item={item} /> : <AssetIdLine nasaId={nasaId} />}
+          <ExternalLink
             href={`https://images.nasa.gov/details/${encodeURIComponent(nasaId)}`}
-            target="_blank"
-            rel="noopener noreferrer"
             className="mt-4 inline-block text-sm font-medium text-nebula-secondary hover:underline"
           >
             View full details on images.nasa.gov
-          </a>
+          </ExternalLink>
         </div>
       </Card>
     </div>
+  );
+}
+
+function AssetIdLine({ nasaId, item }: { nasaId: string; item?: GalleryItem }) {
+  return (
+    <p className="mt-1 text-xs text-text-muted">
+      {item?.dateCreated && (
+        <>
+          <FormattedDate value={item.dateCreated} /> ·{" "}
+        </>
+      )}
+      {item?.center && <>{item.center} · </>}
+      Asset ID: {nasaId}
+    </p>
+  );
+}
+
+function ItemDetails({ item }: { item: GalleryItem }) {
+  return (
+    <>
+      <AssetIdLine nasaId={item.nasaId} item={item} />
+      {item.description && <p className="mt-4 text-sm leading-relaxed text-text-muted">{item.description}</p>}
+      {item.keywords.length > 0 && (
+        <ul className="mt-4 flex flex-wrap gap-2" aria-label="Keywords">
+          {item.keywords.slice(0, 12).map((keyword) => (
+            <li key={keyword}>
+              <Badge>{keyword}</Badge>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
   );
 }

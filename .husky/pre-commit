@@ -1,0 +1,4 @@
+# Fast checks only (< ~10s). Everything else runs in CI via `npm run verify`.
+# See docs/solution-plan/quality-harness.md.
+npx lint-staged
+npm run --silent check:arch

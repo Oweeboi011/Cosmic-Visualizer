@@ -27,7 +27,7 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: |
           git diff "origin/${BASE_REF}...HEAD" \
-            -- '*.ts' '*.tsx' '*.py' '*.js' \
+            -- '*.ts' '*.tsx' '*.js' '*.mjs' \
             ':!*.test.*' ':!*.spec.*' ':!**/coverage/**' \
             ':!**/node_modules/**' \
             > /tmp/pr.diff

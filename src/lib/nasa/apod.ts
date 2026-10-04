@@ -1,6 +1,6 @@
 import { fetchNasaApi } from "@/lib/nasa/client";
 import type { ApodItem } from "@/types/nasa";
-import { clampDateRange, isValidDateString, toIsoDate } from "@/lib/utils";
+import { DAY_MS, clampDateRange, clampNumber, isValidDateString, toIsoDate } from "@/lib/utils";
 
 interface RawApod {
   date: string;
@@ -35,13 +35,12 @@ export interface GetApodParams {
 
 /** Max span for archive range requests, to keep payloads and upstream load bounded. */
 const MAX_RANGE_DAYS = 30;
-const DAY_MS = 24 * 60 * 60 * 1000;
 
 export async function getApod(params: GetApodParams = {}): Promise<ApodItem[]> {
   const query: Record<string, string | number | undefined> = {};
 
   if (params.count) {
-    query.count = Math.min(Math.max(params.count, 1), 50);
+    query.count = clampNumber(params.count, 1, 50);
   } else if (params.startDate || params.endDate) {
     // Always send a bounded, ordered range: a start date alone would make APOD return
     // everything up to today (thousands of entries), and start > end is an upstream 400.

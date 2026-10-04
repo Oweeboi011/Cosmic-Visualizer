@@ -12,15 +12,9 @@ export async function ExoplanetsSection({
   basePath?: string;
 }) {
   let items: ExoplanetItem[];
-  let failed = false;
   try {
     ({ items } = await getExoplanets({ discoveryMethod, limit: 50 }));
   } catch {
-    failed = true;
-    items = [];
-  }
-
-  if (failed) {
     return (
       <ErrorState message="We couldn't load exoplanet data from the NASA Exoplanet Archive right now." />
     );

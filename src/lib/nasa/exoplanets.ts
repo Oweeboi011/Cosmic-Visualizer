@@ -1,5 +1,6 @@
 import { fetchJson } from "@/lib/nasa/client";
 import type { ExoplanetItem } from "@/types/nasa";
+import { clampNumber } from "@/lib/utils";
 
 const TAP_BASE = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync";
 const REVALIDATE_SECONDS = 24 * 60 * 60; // 24h — archive updates infrequently
@@ -68,10 +69,8 @@ export interface GetExoplanetsParams {
  * supports `TOP n` for row limiting but rejects `OFFSET`/`LIMIT` (ORA-00933), so
  * pagination isn't available here; only a bounded top-N result set is fetched.
  */
-export async function getExoplanets(
-  params: GetExoplanetsParams = {}
-): Promise<{ items: ExoplanetItem[] }> {
-  const limit = Math.min(Math.max(params.limit ?? 50, 1), 200);
+export async function getExoplanets(params: GetExoplanetsParams = {}): Promise<{ items: ExoplanetItem[] }> {
+  const limit = clampNumber(params.limit ?? 50, 1, 200);
 
   let where = "";
   if (params.discoveryMethod && KNOWN_DISCOVERY_METHODS.has(params.discoveryMethod)) {
@@ -79,8 +78,7 @@ export async function getExoplanets(
   }
 
   const adql =
-    `select top ${limit} ${COLUMNS.join(",")} from pscomppars${where}` +
-    ` order by disc_year desc`;
+    `select top ${limit} ${COLUMNS.join(",")} from pscomppars${where}` + ` order by disc_year desc`;
 
   const url = new URL(TAP_BASE);
   url.searchParams.set("query", adql);

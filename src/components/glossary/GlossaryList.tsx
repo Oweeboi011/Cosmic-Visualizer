@@ -7,14 +7,14 @@ import { GlossaryEntry } from "@/components/glossary/GlossaryEntry";
 import { GlossaryDefinitionModal } from "@/components/glossary/GlossaryDefinitionModal";
 import type { GlossaryEntry as GlossaryEntryType } from "@/types/nasa";
 
-export function filterGlossary(entries: GlossaryEntryType[], query: string): GlossaryEntryType[] {
+function filterGlossary(entries: GlossaryEntryType[], query: string): GlossaryEntryType[] {
   const q = query.trim().toLowerCase();
   if (!q) return entries;
   return entries.filter(
     (e) =>
       e.term.toLowerCase().includes(q) ||
       e.definition.toLowerCase().includes(q) ||
-      e.category?.toLowerCase().includes(q)
+      e.category?.toLowerCase().includes(q),
   );
 }
 

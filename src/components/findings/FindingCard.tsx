@@ -1,5 +1,5 @@
-import Image from "next/image";
-import { isOptimizableImage } from "@/lib/images";
+import { ExternalLink } from "@/components/ui/ExternalLink";
+import { RemoteImage } from "@/components/ui/RemoteImage";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { FormattedDate } from "@/components/ui/FormattedDate";
@@ -7,17 +7,16 @@ import type { FindingItem } from "@/types/nasa";
 
 export function FindingCard({ item }: { item: FindingItem }) {
   return (
-    <a href={item.link} target="_blank" rel="noopener noreferrer">
+    <ExternalLink href={item.link} className="">
       <Card className="flex h-full flex-col overflow-hidden p-0">
         {item.imageUrl && (
           <div className="relative aspect-video bg-space-bg">
-            <Image
+            <RemoteImage
               src={item.imageUrl}
               alt={item.title}
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
               className="object-cover"
-              unoptimized={!isOptimizableImage(item.imageUrl)}
             />
           </div>
         )}
@@ -33,6 +32,6 @@ export function FindingCard({ item }: { item: FindingItem }) {
           </p>
         </div>
       </Card>
-    </a>
+    </ExternalLink>
   );
 }
