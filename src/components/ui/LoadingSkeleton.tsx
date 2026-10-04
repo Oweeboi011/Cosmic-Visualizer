@@ -1,3 +1,5 @@
+import { Grid } from "@/components/ui/Grid";
+
 export function LoadingSkeleton({
   shape = "card",
   count = 6,
@@ -20,10 +22,10 @@ export function LoadingSkeleton({
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <Grid>
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="h-56 w-full animate-pulse rounded-xl bg-space-surface" />
       ))}
-    </div>
+    </Grid>
   );
 }

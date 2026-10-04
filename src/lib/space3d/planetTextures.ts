@@ -18,7 +18,7 @@ type SurfaceShader = (x: number, y: number, z: number, lat: number, lon: number)
 
 function renderSphereMap(
   width: number,
-  shade: (x: number, y: number, z: number, lat: number, lon: number) => [number, number, number, number]
+  shade: (x: number, y: number, z: number, lat: number, lon: number) => [number, number, number, number],
 ): TextureData {
   const height = Math.max(1, Math.floor(width / 2));
   const data = new Uint8Array(width * height * 4);
@@ -62,7 +62,7 @@ function bandedGiant(
   noise: Noise3D,
   palette: Rgb[],
   bandFrequency: number,
-  turbulence: number
+  turbulence: number,
 ): SurfaceShader {
   return (x, y, z, lat) => {
     const warp = fbm(noise, x * 3, y * 3, z * 3, 4) - 0.5;
@@ -133,7 +133,7 @@ function surfaceShader(kind: SurfaceKind, noise: Noise3D): SurfaceShader {
           [0.84, 0.72, 0.58],
         ],
         14,
-        3
+        3,
       );
       return (x, y, z, lat, lon) => {
         const base = bands(x, y, z, lat, lon);
@@ -151,7 +151,7 @@ function surfaceShader(kind: SurfaceKind, noise: Noise3D): SurfaceShader {
           [0.95, 0.88, 0.7],
         ],
         10,
-        1.5
+        1.5,
       );
 
     case "uranus":
@@ -169,7 +169,7 @@ function surfaceShader(kind: SurfaceKind, noise: Noise3D): SurfaceShader {
           [0.3, 0.5, 0.92],
         ],
         9,
-        2
+        2,
       );
       return (x, y, z, lat, lon) => {
         const base = bands(x, y, z, lat, lon);
@@ -221,32 +221,45 @@ export function generateSunTexture(width: number): TextureData {
  * Saturn's bands follow the real C/B/A ring layout, including the Cassini Division
  * and Encke Gap; Uranus's rings are faint and narrow.
  */
-export function generateRingTexture(kind: RingKind, width: number): TextureData {
-  const data = new Uint8Array(width * 4);
-  const noise = createNoise3D(kind === "saturn" ? 1111 : 1212);
+type RingSample = (u: number, grain: number) => { alpha: number; color: Rgb };
 
-  for (let i = 0; i < width; i++) {
-    const u = (i + 0.5) / width;
-    const grain = fbm(noise, u * 60, 0.5, 0.5, 3);
-    let alpha: number;
-    let color: Rgb;
+/** Saturn's ring density by distance in planet radii. */
+function saturnRingAlpha(r: number): number {
+  if (r < 1.53) return 0.25; // C ring
+  if (r < 1.95) return 0.9; // B ring
+  if (r < 2.03) return 0.06; // Cassini Division
+  if (r > 2.205 && r < 2.215) return 0.05; // Encke Gap
+  return 0.65; // A ring
+}
 
-    if (kind === "saturn") {
-      const r = 1.24 + u * (2.27 - 1.24); // planet radii
-      if (r < 1.53) alpha = 0.25; // C ring
-      else if (r < 1.95) alpha = 0.9; // B ring
-      else if (r < 2.03) alpha = 0.06; // Cassini Division
-      else if (r > 2.205 && r < 2.215) alpha = 0.05; // Encke Gap
-      else alpha = 0.65; // A ring
-      alpha *= 0.7 + grain * 0.6;
-      color = lerpRgb([0.62, 0.55, 0.45], [0.92, 0.85, 0.72], grain);
-    } else {
+const RING_SAMPLERS: Record<RingKind, { seed: number; sample: RingSample }> = {
+  saturn: {
+    seed: 1111,
+    sample: (u, grain) => ({
+      alpha: saturnRingAlpha(1.24 + u * (2.27 - 1.24)) * (0.7 + grain * 0.6),
+      color: lerpRgb([0.62, 0.55, 0.45], [0.92, 0.85, 0.72], grain),
+    }),
+  },
+  uranus: {
+    seed: 1212,
+    sample: (u) => {
       const r = 1.64 + u * (2.05 - 1.64);
       const narrow = [1.66, 1.73, 1.8, 1.86, 1.95].some((c) => Math.abs(r - c) < 0.006);
       const epsilon = Math.abs(r - 2.0) < 0.02; // brightest (epsilon) ring
-      alpha = epsilon ? 0.55 : narrow ? 0.3 : 0.02;
-      color = [0.7, 0.75, 0.78];
-    }
+      const alpha = epsilon ? 0.55 : narrow ? 0.3 : 0.02;
+      return { alpha, color: [0.7, 0.75, 0.78] };
+    },
+  },
+};
+
+export function generateRingTexture(kind: RingKind, width: number): TextureData {
+  const data = new Uint8Array(width * 4);
+  const { seed, sample } = RING_SAMPLERS[kind];
+  const noise = createNoise3D(seed);
+
+  for (let i = 0; i < width; i++) {
+    const u = (i + 0.5) / width;
+    const { alpha, color } = sample(u, fbm(noise, u * 60, 0.5, 0.5, 3));
 
     data[i * 4] = clampByte(color[0]);
     data[i * 4 + 1] = clampByte(color[1]);

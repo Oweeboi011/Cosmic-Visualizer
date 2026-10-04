@@ -8,3 +8,5 @@ src/app/api/ @oweeboipenaranda
 # Security headers and CI/CD configuration
 next.config.ts @oweeboipenaranda
 .github/ @oweeboipenaranda
+.azuredevops/ @oweeboipenaranda
+.husky/ @oweeboipenaranda

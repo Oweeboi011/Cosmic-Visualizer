@@ -23,7 +23,7 @@ export interface SpiralGalaxyResult {
   clickableIndices: number[];
 }
 
-export const DEFAULT_SPIRAL_GALAXY_PARAMS: SpiralGalaxyParams = {
+const DEFAULT_SPIRAL_GALAXY_PARAMS: SpiralGalaxyParams = {
   particleCount: 20000,
   armCount: 3,
   armSpread: 0.4,
@@ -58,12 +58,8 @@ export function pickClickableIndices(candidates: number[], count: number): numbe
  * indices flagged as "clickable stars" (biased away from the dense core so they're
  * visually distinguishable).
  */
-export function generateSpiralGalaxy(
-  params: Partial<SpiralGalaxyParams> = {}
-): SpiralGalaxyResult {
-  const defined = Object.fromEntries(
-    Object.entries(params).filter(([, v]) => v !== undefined)
-  );
+export function generateSpiralGalaxy(params: Partial<SpiralGalaxyParams> = {}): SpiralGalaxyResult {
+  const defined = Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined));
   const p = { ...DEFAULT_SPIRAL_GALAXY_PARAMS, ...defined };
   const rand = mulberry32(p.seed);
 

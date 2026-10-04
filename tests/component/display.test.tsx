@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { AlertTimeline } from "@/components/alerts/AlertTimeline";
@@ -32,8 +31,14 @@ describe("Pagination", () => {
 
   it("links to neighbouring pages and keeps other params", () => {
     render(<Pagination page={2} totalPages={5} basePath="/planets" params={params} />);
-    expect(screen.getByRole("link", { name: /Previous/ })).toHaveAttribute("href", "/planets?tab=gallery&q=mars");
-    expect(screen.getByRole("link", { name: /Next/ })).toHaveAttribute("href", "/planets?tab=gallery&q=mars&page=3");
+    expect(screen.getByRole("link", { name: /Previous/ })).toHaveAttribute(
+      "href",
+      "/planets?tab=gallery&q=mars",
+    );
+    expect(screen.getByRole("link", { name: /Next/ })).toHaveAttribute(
+      "href",
+      "/planets?tab=gallery&q=mars&page=3",
+    );
     expect(screen.getByText("Page 2 of 5")).toBeInTheDocument();
   });
 
@@ -68,7 +73,10 @@ describe("AlertTimeline", () => {
     render(<AlertTimeline items={[alert, { ...alert, id: "a2", sourceUrl: undefined }]} />);
     const [first, second] = screen.getAllByRole("listitem");
     expect(within(first).getByText("Sep 2, 2026, 12:23 UTC")).toBeInTheDocument();
-    expect(within(first).getByRole("link", { name: "View source report" })).toHaveAttribute("href", alert.sourceUrl);
+    expect(within(first).getByRole("link", { name: "View source report" })).toHaveAttribute(
+      "href",
+      alert.sourceUrl,
+    );
     expect(within(second).queryByRole("link")).toBeNull();
   });
 
@@ -143,7 +151,9 @@ describe("GalleryGrid", () => {
   it("links to detail pages and optimizes NASA thumbnails", () => {
     render(<GalleryGrid items={[item]} basePath="/galaxies" />);
     expect(screen.getByRole("link")).toHaveAttribute("href", "/galaxies/PIA04921");
-    expect(screen.getByRole("img", { name: item.title }).getAttribute("src")).toMatch(/^\/_next\/image\?url=/);
+    expect(screen.getByRole("img", { name: item.title }).getAttribute("src")).toMatch(
+      /^\/_next\/image\?url=/,
+    );
     expect(screen.getByText("Dec 10, 2003")).toBeInTheDocument();
   });
 
@@ -170,7 +180,7 @@ describe("Modal", () => {
     const { unmount } = render(
       <Modal title="Details" onClose={onClose}>
         <a href="#x">Inner link</a>
-      </Modal>
+      </Modal>,
     );
     const dialog = screen.getByRole("dialog", { name: "Details" });
     const close = screen.getByRole("button", { name: "Close" });

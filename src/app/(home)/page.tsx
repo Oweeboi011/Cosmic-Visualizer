@@ -1,5 +1,4 @@
-import Image from "next/image";
-import { isOptimizableImage } from "@/lib/images";
+import { RemoteImage } from "@/components/ui/RemoteImage";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { getApod } from "@/lib/nasa/apod";
@@ -45,13 +44,12 @@ export default async function Home() {
             <div className="grid gap-0 sm:grid-cols-2">
               <div className="relative aspect-video sm:aspect-auto">
                 {todayApod.mediaType === "image" ? (
-                  <Image
+                  <RemoteImage
                     src={todayApod.url}
                     alt={todayApod.title}
                     fill
                     sizes="(min-width: 640px) 50vw, 100vw"
                     className="object-cover"
-                    unoptimized={!isOptimizableImage(todayApod.url)}
                   />
                 ) : (
                   <div className="flex h-full min-h-64 items-center justify-center bg-space-bg text-sm text-text-muted">
@@ -80,9 +78,7 @@ export default async function Home() {
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card className="p-5">
-          <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-            Latest cosmic alert
-          </p>
+          <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Latest cosmic alert</p>
           {latestAlert ? (
             <>
               <div className="mt-2">
@@ -105,9 +101,7 @@ export default async function Home() {
         </Card>
 
         <Card className="p-5">
-          <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-            Latest finding
-          </p>
+          <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Latest finding</p>
           {latestFinding ? (
             <p className="mt-2 line-clamp-3 text-sm text-text-primary">{latestFinding.title}</p>
           ) : (
@@ -131,13 +125,12 @@ export default async function Home() {
             {featuredImages.map((img) => (
               <div key={img.nasaId} className="relative h-14 w-14 overflow-hidden rounded-md bg-space-bg">
                 {img.thumbnailUrl && (
-                  <Image
+                  <RemoteImage
                     src={img.thumbnailUrl}
                     alt={img.title}
                     fill
                     sizes="56px"
                     className="object-cover"
-                    unoptimized={!isOptimizableImage(img.thumbnailUrl)}
                   />
                 )}
               </div>

@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { NavBar } from "@/components/layout/NavBar";
@@ -88,7 +87,7 @@ describe("filter controls", () => {
     fireEvent.click(screen.getByRole("button", { name: "ESO" }));
     expect(nav.push).toHaveBeenLastCalledWith("/findings?agency=ESO");
     fireEvent.click(screen.getByRole("button", { name: "All" }));
-    expect(nav.push).toHaveBeenLastCalledWith("/findings?");
+    expect(nav.push).toHaveBeenLastCalledWith("/findings");
   });
 
   it("GalleryFilters searches from a suggestion and resets paging", () => {
@@ -108,7 +107,7 @@ describe("filter controls", () => {
       fireEvent.change(screen.getByRole("searchbox"), { target: { value: "  " } });
       expect(nav.push).not.toHaveBeenCalled();
       vi.advanceTimersByTime(400);
-      expect(nav.push).toHaveBeenLastCalledWith("/stars?");
+      expect(nav.push).toHaveBeenLastCalledWith("/stars");
     } finally {
       vi.useRealTimers();
     }

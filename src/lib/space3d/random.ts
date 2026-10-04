@@ -17,7 +17,7 @@ export function gaussianRandom(rand: () => number): number {
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
 }
 
-export function lerp(a: number, b: number, t: number): number {
+function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t;
 }
 

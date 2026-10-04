@@ -34,7 +34,6 @@ export interface GalleryItem {
 export interface GalleryAsset {
   nasaId: string;
   imageUrls: string[];
-  metadataUrl?: string;
 }
 
 export type AlertSeverity = "info" | "watch" | "warning" | "severe";

@@ -1,0 +1,3 @@
+# LF in the repository regardless of OS, so hooks and diffs don't churn on line endings.
+* text=auto eol=lf
+*.ico binary

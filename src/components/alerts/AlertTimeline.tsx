@@ -1,3 +1,4 @@
+import { ExternalLink } from "@/components/ui/ExternalLink";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { FormattedDate } from "@/components/ui/FormattedDate";
@@ -11,10 +12,7 @@ export function AlertTimeline({ items }: { items: AlertItem[] }) {
   return (
     <ol className="flex flex-col gap-3">
       {items.map((item) => (
-        <li
-          key={item.id}
-          className="rounded-lg border border-space-border bg-space-surface/60 p-4"
-        >
+        <li key={item.id} className="rounded-lg border border-space-border bg-space-surface/60 p-4">
           <div className="flex flex-wrap items-center gap-2">
             <Badge tone={item.severity}>{item.type}</Badge>
             <span className="text-xs text-text-muted">
@@ -24,14 +22,12 @@ export function AlertTimeline({ items }: { items: AlertItem[] }) {
           <p className="mt-2 text-sm font-medium text-text-primary">{item.title}</p>
           <p className="mt-1 line-clamp-3 text-xs text-text-muted">{item.summary}</p>
           {item.sourceUrl && (
-            <a
+            <ExternalLink
               href={item.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
               className="mt-2 inline-block text-xs font-medium text-nebula-secondary hover:underline"
             >
               View source report
-            </a>
+            </ExternalLink>
           )}
         </li>
       ))}
