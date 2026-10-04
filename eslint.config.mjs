@@ -18,6 +18,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Standalone Vite project with its own toolchain:
+    "visuals/**",
     // Generated reports:
     "coverage/**",
     "playwright-report/**",
