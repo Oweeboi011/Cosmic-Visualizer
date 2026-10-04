@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
-import { OPTIMIZED_IMAGE_HOSTS } from "./src/lib/images";
+// Explicit extension: also resolvable when Next loads this file without SWC (plain Node).
+import { OPTIMIZED_IMAGE_HOSTS } from "./src/lib/images.ts";
 
 /**
  * Baseline hardening headers. The Content-Security-Policy needs a per-request nonce, so

@@ -1,0 +1,4 @@
+node_modules
+dist
+# Avatar models are large and individually licensed; add your own locally.
+*.vrm

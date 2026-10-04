@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cosmic Visuals</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <canvas id="scene" aria-label="Interactive 3D spiral galaxy with nebulae and planets"></canvas>
+    <div id="hud">
+      <p>
+        Drag to orbit · scroll to zoom · double-click a planet or the core to fly to it ·
+        <kbd>C</kbd> cruise · <kbd>H</kbd> hide panel
+      </p>
+      <span id="fps" aria-live="off"></span>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
