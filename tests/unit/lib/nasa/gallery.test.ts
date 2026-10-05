@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from "vitest";
-import { searchGallery } from "@/lib/nasa/gallery";
+import { GALLERY_MAX_PAGE, getGalleryAsset, getGalleryItem, searchGallery } from "@/lib/nasa/gallery";
 
 function rawItem(nasaId: string, dateCreated: string) {
   return {
@@ -43,5 +43,120 @@ describe("searchGallery", () => {
 
     const { items } = await searchGallery();
     expect(items.map((i) => i.nasaId)).toEqual(["newest", "middle", "oldest"]);
+  });
+
+  it("skips items with no data block instead of crashing", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        new Response(
+          JSON.stringify({
+            collection: { items: [{ href: "x" }, rawItem("valid", "2024-01-01T00:00:00Z")] },
+          }),
+          { status: 200 }
+        )
+      )
+    );
+
+    const { items } = await searchGallery();
+    expect(items.map((i) => i.nasaId)).toEqual(["valid"]);
+  });
+});
+
+describe("getGalleryAsset", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("surfaces an unknown asset as a 404 so detail pages can render not-found", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 404 })));
+    await expect(getGalleryAsset("not-a-real-id")).rejects.toMatchObject({
+      name: "NasaApiError",
+      status: 404,
+      code: "UPSTREAM_NOT_FOUND",
+    });
+  });
+});
+
+function mockJson(body: unknown) {
+  const fetchMock = vi.fn(async (_url: string) => new Response(JSON.stringify(body), { status: 200 }));
+  vi.stubGlobal("fetch", fetchMock);
+  return fetchMock;
+}
+
+describe("gallery URLs and paging", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("upgrades asset and thumbnail URLs to https", async () => {
+    mockJson({
+      collection: {
+        items: [
+          { href: "http://images-assets.nasa.gov/image/A/A~orig.jpg" },
+          { href: "http://images-assets.nasa.gov/image/A/metadata.json" },
+        ],
+      },
+    });
+    const { imageUrls } = await getGalleryAsset("A");
+    expect(imageUrls).toEqual(["https://images-assets.nasa.gov/image/A/A~orig.jpg"]);
+
+    mockJson({
+      collection: {
+        items: [
+          { ...rawItem("A", "2024-01-01"), links: [{ href: "http://images-assets.nasa.gov/a~thumb.jpg", rel: "preview" }] },
+        ],
+      },
+    });
+    const { items } = await searchGallery();
+    expect(items[0].thumbnailUrl).toBe("https://images-assets.nasa.gov/a~thumb.jpg");
+  });
+
+  it("caps the page at the API's last servable page", async () => {
+    const fetchMock = mockJson({ collection: { items: [] } });
+    const { page } = await searchGallery({ q: "galaxy", page: 5000 });
+    expect(page).toBe(GALLERY_MAX_PAGE);
+    expect(new URL(fetchMock.mock.calls[0][0]).searchParams.get("page")).toBe(String(GALLERY_MAX_PAGE));
+  });
+});
+
+describe("getGalleryItem", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("looks the item up by ID and returns plain-text metadata", async () => {
+    const fetchMock = mockJson({
+      collection: {
+        items: [
+          {
+            ...rawItem("PIA04921", "2003-12-10T22:41:32Z"),
+            data: [
+              {
+                nasa_id: "PIA04921",
+                title: "Andromeda Galaxy",
+                description: "<p>GALEX view of <b>M31</b> &amp; its halo</p>",
+                date_created: "2003-12-10T22:41:32Z",
+                media_type: "image",
+                center: "JPL",
+              },
+            ],
+          },
+        ],
+      },
+    });
+    const item = await getGalleryItem("PIA04921");
+    expect(new URL(fetchMock.mock.calls[0][0]).searchParams.get("nasa_id")).toBe("PIA04921");
+    expect(item).toMatchObject({
+      nasaId: "PIA04921",
+      title: "Andromeda Galaxy",
+      description: "GALEX view of M31 & its halo",
+      center: "JPL",
+    });
+  });
+
+  it("returns null when the ID isn't found", async () => {
+    mockJson({ collection: { items: [], metadata: { total_hits: 0 } } });
+    expect(await getGalleryItem("nope")).toBeNull();
   });
 });

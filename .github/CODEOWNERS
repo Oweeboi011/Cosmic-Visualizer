@@ -1,14 +1,12 @@
 # Default reviewer for all changes
 * @oweeboipenaranda
 
-# API routes — server-side secrets and auth logic
-frontend/src/app/api/ @oweeboipenaranda
+# Server-side data access and the NASA API key boundary
+src/lib/nasa/ @oweeboipenaranda
+src/app/api/ @oweeboipenaranda
 
-# Firestore security rules — always needs careful review
-firestore.rules @oweeboipenaranda
-firestore.indexes.json @oweeboipenaranda
-
-# CI/CD and deployment configuration
+# Security headers and CI/CD configuration
+next.config.ts @oweeboipenaranda
 .github/ @oweeboipenaranda
-vercel.json @oweeboipenaranda
-docker-compose.yml @oweeboipenaranda
+.azuredevops/ @oweeboipenaranda
+.husky/ @oweeboipenaranda

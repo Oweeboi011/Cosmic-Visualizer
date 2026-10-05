@@ -72,4 +72,28 @@ describe("getFindings", () => {
     const items = await getFindings();
     expect(items.every((i) => i.source === "fallback")).toBe(true);
   });
+
+  it("keeps items with a malformed pubDate instead of dropping the whole feed", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(SAMPLE_RSS.replace("Mon, 05 Jan 2026 12:00:00 +0000", "not a date"), { status: 200 }))
+    );
+
+    const items = await getFindings({ agency: "NASA" });
+    expect(items).toHaveLength(1);
+    expect(items[0].source).toBe("live");
+    expect(Number.isNaN(Date.parse(items[0].publishedAt))).toBe(false);
+  });
+
+  it("drops items whose link is not an http(s) URL and ignores non-http images", async () => {
+    const rss = SAMPLE_RSS.replace(
+      "</channel>",
+      `<item><title>Bad link</title><link>javascript:alert(1)</link></item></channel>`
+    ).replace("https://example.com/photo.jpg", "data:image/svg+xml,evil");
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(rss, { status: 200 })));
+
+    const items = await getFindings({ agency: "NASA" });
+    expect(items.map((i) => i.title)).toEqual(["New Galaxy Discovered"]);
+    expect(items[0].imageUrl).toBeUndefined();
+  });
 });

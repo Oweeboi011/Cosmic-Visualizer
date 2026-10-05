@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { RemoteImage } from "@/components/ui/RemoteImage";
 import Link from "next/link";
 import { Modal } from "@/components/ui/Modal";
 import { LoadingSkeleton } from "@/components/ui/LoadingSkeleton";
@@ -41,8 +41,8 @@ export function StarInfoModal({
   return (
     <Modal title={star.label} onClose={onClose}>
       <p className="mb-4 text-xs text-text-muted">
-        A stylized point in this visualization — not a real star position. Here&apos;s
-        real NASA imagery related to &ldquo;{star.searchTerm}&rdquo;.
+        A stylized point in this visualization — not a real star position. Here&apos;s real NASA imagery
+        related to &ldquo;{star.searchTerm}&rdquo;.
       </p>
 
       {error && <ErrorState message="We couldn't load imagery from the NASA Image and Video Library." />}
@@ -72,20 +72,17 @@ export function StarInfoModal({
               >
                 {item.thumbnailUrl && (
                   <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-space-bg">
-                    <Image
+                    <RemoteImage
                       src={item.thumbnailUrl}
                       alt={item.title}
                       fill
                       sizes="64px"
                       className="object-cover"
-                      unoptimized
                     />
                   </div>
                 )}
                 <div className="min-w-0">
-                  <p className="line-clamp-1 text-sm font-medium text-text-primary">
-                    {item.title}
-                  </p>
+                  <p className="line-clamp-1 text-sm font-medium text-text-primary">{item.title}</p>
                   <p className="line-clamp-2 text-xs text-text-muted">{item.description}</p>
                 </div>
               </Link>

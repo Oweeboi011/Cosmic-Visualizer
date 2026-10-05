@@ -1,7 +1,8 @@
 import { XMLParser } from "fast-xml-parser";
 import { fetchText } from "@/lib/nasa/client";
-import { NasaApiError, type FindingItem, type FindingAgency } from "@/types/nasa";
+import { FINDING_AGENCIES, NasaApiError, type FindingItem, type FindingAgency } from "@/types/nasa";
 import fallbackData from "@/data/findings.fallback.json";
+import { stripHtml } from "@/lib/text";
 
 /**
  * Verified live at implementation time (2026-08): all three of these are standard
@@ -20,21 +21,26 @@ const REVALIDATE_SECONDS = 6 * 60 * 60; // 6h
 
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
 
-function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&#8230;/g, "…")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&#8217;/g, "’")
-    .replace(/&#8220;|&#8221;/g, '"')
-    .replace(/\s+/g, " ")
-    .trim();
+/** Feed content is third-party and rendered as href/src, so only allow web URLs. */
+function safeHttpUrl(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  try {
+    const url = new URL(value.trim());
+    return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 function extractFirstImage(html: string): string | undefined {
   const match = html.match(/<img[^>]*\ssrc="([^"]+)"/);
-  return match?.[1];
+  return safeHttpUrl(match?.[1]);
+}
+
+/** A malformed pubDate must not throw — that would discard the agency's whole feed. */
+function toIsoOrNow(date: string | undefined): string {
+  const parsed = date ? new Date(date) : null;
+  return parsed && !Number.isNaN(parsed.getTime()) ? parsed.toISOString() : new Date().toISOString();
 }
 
 interface RawRssItem {
@@ -46,16 +52,17 @@ interface RawRssItem {
 }
 
 function normalize(item: RawRssItem, agency: FindingAgency, index: number): FindingItem | null {
-  if (!item.title || !item.link) return null;
+  const link = safeHttpUrl(item.link);
+  if (!item.title || !link) return null;
   const description = item.description ?? "";
   const guid = typeof item.guid === "string" ? item.guid : item.guid?.["#text"];
 
   return {
-    id: guid ?? `${item.link}-${index}`,
+    id: guid ?? `${link}-${index}`,
     title: stripHtml(item.title),
     summary: stripHtml(description).slice(0, 400),
-    link: item.link,
-    publishedAt: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
+    link,
+    publishedAt: toIsoOrNow(item.pubDate),
     imageUrl: extractFirstImage(description),
     source: "live",
     agency,
@@ -99,7 +106,7 @@ export interface GetFindingsParams {
 }
 
 export async function getFindings(params: GetFindingsParams = {}): Promise<FindingItem[]> {
-  const agencies = params.agency ? [params.agency] : (Object.keys(AGENCY_FEEDS) as FindingAgency[]);
+  const agencies = params.agency ? [params.agency] : FINDING_AGENCIES;
 
   const results = await Promise.allSettled(agencies.map((agency) => fetchAgencyFeed(agency)));
 

@@ -3,9 +3,11 @@
 import { useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Points, PointMaterial, Instances, Instance } from "@react-three/drei";
-import type { Group } from "three";
-import { generateSpiralGalaxy } from "@/lib/galaxy3d/generateSpiralGalaxy";
+import * as THREE from "three";
+import { generateGalaxy, type GalaxyMorphology } from "@/lib/galaxy3d/generateGalaxy";
 import { getStarCatalogEntry } from "@/lib/galaxy3d/starCatalog";
+import { useHoverCursor } from "@/components/space3d/hooks";
+import { getGlowTexture } from "@/components/space3d/textures";
 import type { GalleryItem } from "@/types/nasa";
 
 export interface ClickableStar {
@@ -17,7 +19,15 @@ export interface ClickableStar {
   searchTerm?: string;
 }
 
+const CORE_GLOW: Record<GalaxyMorphology, { color: string; size: number } | null> = {
+  spiral: { color: "#ffe9c4", size: 9 },
+  "barred-spiral": { color: "#ffe9c4", size: 10 },
+  elliptical: { color: "#ffd9a3", size: 16 },
+  irregular: null,
+};
+
 export function GalaxyParticles({
+  morphology,
   particleCount,
   clickableStarCount,
   seed,
@@ -25,6 +35,7 @@ export function GalaxyParticles({
   realGalaxies,
   onSelectStar,
 }: {
+  morphology: GalaxyMorphology;
   particleCount: number;
   clickableStarCount: number;
   seed?: number;
@@ -32,16 +43,23 @@ export function GalaxyParticles({
   realGalaxies?: GalleryItem[];
   onSelectStar: (star: ClickableStar) => void;
 }) {
-  const groupRef = useRef<Group>(null);
+  const groupRef = useRef<THREE.Group>(null);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
+  useHoverCursor(hoveredId !== null);
 
   const effectiveClickableCount = realGalaxies
     ? Math.min(realGalaxies.length, clickableStarCount)
     : clickableStarCount;
 
   const { positions, colors, clickableIndices } = useMemo(
-    () => generateSpiralGalaxy({ particleCount, clickableStarCount: effectiveClickableCount, seed }),
-    [particleCount, effectiveClickableCount, seed]
+    () =>
+      generateGalaxy({
+        morphology,
+        particleCount,
+        clickableStarCount: effectiveClickableCount,
+        seed: seed ?? 1337,
+      }),
+    [morphology, particleCount, effectiveClickableCount, seed]
   );
 
   const clickableStars = useMemo(
@@ -72,21 +90,37 @@ export function GalaxyParticles({
     }
   });
 
+  const glow = CORE_GLOW[morphology];
+
   return (
     <group ref={groupRef}>
-      <Points positions={positions} colors={colors} stride={3}>
+      {/* Keyed so drei rebuilds the buffer when the particle count changes. */}
+      <Points key={`${morphology}-${particleCount}`} positions={positions} colors={colors} stride={3}>
         <PointMaterial
           transparent
           vertexColors
-          size={0.06}
+          size={0.07}
           sizeAttenuation
           depthWrite={false}
-          opacity={0.85}
+          opacity={0.8}
+          blending={THREE.AdditiveBlending}
         />
       </Points>
+      {glow && (
+        <sprite scale={[glow.size, glow.size, 1]}>
+          <spriteMaterial
+            map={getGlowTexture()}
+            color={glow.color}
+            opacity={0.55}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+            transparent
+          />
+        </sprite>
+      )}
       <Instances limit={clickableStars.length}>
-        <sphereGeometry args={[0.18, 8, 8]} />
-        <meshBasicMaterial color="#fff7d6" />
+        <sphereGeometry args={[0.11, 8, 8]} />
+        <meshBasicMaterial color="#ffe7a3" />
         {clickableStars.map(({ star, position }) => (
           <Instance
             key={star.id}
@@ -99,12 +133,8 @@ export function GalaxyParticles({
             onPointerOver={(e) => {
               e.stopPropagation();
               setHoveredId(star.id);
-              document.body.style.cursor = "pointer";
             }}
-            onPointerOut={() => {
-              setHoveredId(null);
-              document.body.style.cursor = "auto";
-            }}
+            onPointerOut={() => setHoveredId(null)}
           />
         ))}
       </Instances>

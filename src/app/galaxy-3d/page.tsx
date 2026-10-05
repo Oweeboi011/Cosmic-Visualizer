@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { GalaxySceneLoader } from "@/components/galaxy3d/GalaxySceneLoader";
 import { hashStringToSeed, todayUtcDateString } from "@/lib/galaxy3d/seed";
 import { searchGallery } from "@/lib/nasa/gallery";
+
+export const metadata: Metadata = { title: "3D Galaxy" };
 
 export default async function Galaxy3dPage() {
   const seed = hashStringToSeed(todayUtcDateString());
@@ -18,7 +21,7 @@ export default async function Galaxy3dPage() {
     <div>
       <PageHeader
         title="3D Galaxy"
-        description="Fly through a 3D field of real, NASA-cataloged galaxy images. Drag to orbit, scroll to zoom, and click a marker to open that galaxy's real detail page. Reseeds daily."
+        description="Fly around the four main galaxy types in 3D. Drag to orbit, scroll to zoom, and click a bright marker to open a real NASA-cataloged galaxy image. Reseeds daily."
       />
       <GalaxySceneLoader seed={seed} realGalaxies={realGalaxies} />
     </div>

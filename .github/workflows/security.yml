@@ -23,22 +23,8 @@ jobs:
         with:
           node-version: 22
 
-      - name: Frontend npm audit
-        run: npm audit --audit-level=high
-        working-directory: src/frontend
-
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-
-      - uses: abatilo/actions-poetry@v3
-
-      - run: poetry install
-        working-directory: src/backend
-
-      - name: Backend pip audit
-        run: poetry run pip-audit --vulnerability-service osv -l
-        working-directory: src/backend
+      - name: npm audit (production dependencies)
+        run: npm run audit:prod
 
   secret-scan:
     name: Secret Scan
@@ -81,7 +67,6 @@ jobs:
           --exclude node_modules
           --exclude .next
           --exclude coverage
-          --exclude reports
 
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v4
@@ -96,7 +81,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [javascript-typescript, python]
+        language: [javascript-typescript]
     steps:
       - uses: actions/checkout@v4
 

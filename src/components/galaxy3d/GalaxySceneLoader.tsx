@@ -12,9 +12,11 @@ const GalaxyScene = dynamic(
 export function GalaxySceneLoader({
   seed,
   realGalaxies,
+  compact,
 }: {
   seed?: number;
   realGalaxies?: GalleryItem[];
+  compact?: boolean;
 } = {}) {
-  return <GalaxyScene seed={seed} realGalaxies={realGalaxies} />;
+  return <GalaxyScene seed={seed} realGalaxies={realGalaxies} compact={compact} />;
 }

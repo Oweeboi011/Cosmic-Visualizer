@@ -6,35 +6,102 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "prepare": "husky",
+    "verify": "npm run lint && npm run typecheck && npm run check:arch && npm run check:dup && npm run check:dead && npm run check:secrets && npm run test:coverage",
+    "lint": "eslint --max-warnings=0",
+    "typecheck": "next typegen && tsc --noEmit",
+    "format": "prettier --write",
+    "check:arch": "depcruise src",
+    "check:dup": "jscpd",
+    "check:dead": "knip",
+    "check:secrets": "secretlint --secretlintignore .gitignore \"**/*\"",
+    "audit:prod": "npm audit --omit=dev --audit-level=high",
+    "test": "vitest run --project unit --project component --project integration",
+    "test:watch": "vitest --project unit --project component --project integration",
+    "test:coverage": "vitest run --coverage --project unit --project component --project integration",
+    "test:perf": "vitest run --project performance",
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@react-three/drei": "^10.7.8",
-    "@react-three/fiber": "^9.7.0",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.1",
     "fast-xml-parser": "^5.10.1",
-    "lucide-react": "^1.31.0",
-    "next": "16.3.0",
+    "lucide-react": "^1.49.0",
+    "next": "16.3.6",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "three": "^0.176.0"
+    "server-only": "^0.0.1",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
+    "@secretlint/secretlint-rule-preset-recommend": "^13.0.7",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/three": "^0.185.4",
+    "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^6.0.5",
-    "@vitest/coverage-v8": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.11",
+    "dependency-cruiser": "^18.5.0",
     "eslint": "^9",
-    "eslint-config-next": "16.3.0",
+    "eslint-config-next": "16.3.6",
+    "eslint-plugin-sonarjs": "^4.2.2",
+    "husky": "^9.1.7",
+    "jscpd": "^5.4.0",
     "jsdom": "^29.1.1",
+    "knip": "^6.39.0",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.9",
+    "secretlint": "^13.0.7",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
+  },
+  "lint-staged": {
+    "*": "secretlint",
+    "*.{ts,tsx,mjs,cjs}": [
+      "eslint --fix --max-warnings=0",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,css}": "prettier --write --ignore-unknown"
+  },
+  "prettier": {
+    "printWidth": 110
+  },
+  "knip": {
+    "entry": [
+      "src/components/space3d/texture.worker.ts",
+      "tests/support/*.ts",
+      "tests/performance/**/*.perf.ts"
+    ],
+    "project": [
+      "src/**/*.{ts,tsx}",
+      "tests/**/*.{ts,tsx}"
+    ],
+    "ignoreDependencies": [
+      "tailwindcss",
+      "@secretlint/secretlint-rule-preset-recommend"
+    ],
+    "ignoreExportsUsedInFile": true
+  },
+  "jscpd": {
+    "threshold": 1,
+    "minTokens": 50,
+    "pattern": "**/*.{ts,tsx}",
+    "path": [
+      "src"
+    ],
+    "ignore": [
+      "**/*.json"
+    ],
+    "reporters": [
+      "console"
+    ],
+    "absolute": false,
+    "gitignore": true
   }
 }

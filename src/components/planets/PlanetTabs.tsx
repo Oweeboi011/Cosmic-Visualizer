@@ -17,6 +17,7 @@ export function PlanetTabs({ activeTab }: { activeTab: PlanetTabKey }) {
         <Link
           key={tab.key}
           href={`/planets?tab=${tab.key}`}
+          aria-current={activeTab === tab.key ? "page" : undefined}
           className={`rounded-full px-3 py-1.5 text-sm transition-colors ${
             activeTab === tab.key
               ? "bg-nebula-primary/20 text-nebula-primary"

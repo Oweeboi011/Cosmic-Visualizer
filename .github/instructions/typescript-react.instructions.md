@@ -2,64 +2,27 @@
 applyTo: "**/*.ts,**/*.tsx"
 ---
 
-# Project coding standards for TypeScript and React
+# TypeScript and React conventions
 
-Apply the [general coding guidelines](./general-coding.instructions.md) to all code.
+Project rules are in [copilot-instructions.md](../copilot-instructions.md). Lint, complexity,
+layering, duplication and dead-code limits are enforced by `npm run verify`; see
+[quality harness](../../docs/solution-plan/quality-harness.md).
 
-## TypeScript Guidelines
+## Naming
 
-- Use TypeScript for all new code
-- Follow functional programming principles where possible
-- Use interfaces for data structures and type definitions
-- Prefer immutable data (const, readonly)
-- Use optional chaining (?.) and nullish coalescing (??) operators
+- `PascalCase`: components, interfaces, type aliases, and component file names (`GalleryGrid.tsx`).
+- `camelCase`: variables, functions, hooks (`useSearchParam`), and non-component modules (`planetTextures.ts`).
+- `SCREAMING_SNAKE_CASE`: module-level constants (`MAX_RANGE_DAYS`).
+- Raw upstream shapes are prefixed `Raw` (`RawApod`) and never leave `src/lib/nasa`.
+- Test files mirror the source name: `*.test.ts(x)`, `*.spec.ts` (e2e), `*.perf.ts`.
 
-## React Guidelines
+## Code
 
-- Use functional components with hooks
-- Follow the React hooks rules (no conditional hooks)
-- Use React.FC type for components with children
-- Keep components small and focused
-- Use CSS modules for component styling
-- Develop reusable components when possible
+- Functional components with hooks; type props inline or with an interface; no `React.FC`.
+- Prefer `const`, `readonly`, `?.` and `??`. No `any`; narrow `unknown` instead.
+- Style with Tailwind and the theme tokens in `src/app/globals.css`.
 
-## Test-Coverage Guidelines
+## Tests
 
-### Tools
-
-- Use **Vitest** for unit tests
-- Use **@testing-library/react** for component tests
-- Use **Playwright** for browser end-to-end tests
-
-### Coverage Policy
-
-| Metric     | Minimum (enforced in `vitest.config.ts`) |
-| ---------- | ----------------------------------------- |
-| Statements | 85 %                                       |
-| Branches   | 50 %                                       |
-| Functions  | 85 %                                       |
-| Lines      | 85 %                                       |
-
-- Enforce these thresholds in `vitest.config.ts`; CI must fail when unmet
-- Reject merges that reduce overall coverage
-
-### Test-Writing Rules
-
-- Unit/component tests: put files in `__tests__/` or end with `.test.ts[x]`
-- Playwright specs: place in `e2e/` and end with `.spec.ts`
-- Prefer behavioural assertions; avoid snapshots unless output is static
-- Mock external services and side-effects, not the unit under test
-- Use **msw** for HTTP mocks in unit/component tests
-- Do not commit `.only`, `.skip`, or focussed tests
-- Keep tests deterministic; avoid real time, randomness, and live network calls
-
-### Reporting
-
-- Generate coverage in both `lcov` and `html` formats
-- Upload the `lcov` report to the coverage service
-- Exclude `coverage/` artefacts via `.gitignore`
-
-## Linting and Formatting
-
-- Use ESLint (`npm run lint`) and Prettier (`npm run format`) for linting and formatting
-- Ensure all linting and formatting rules pass before submitting code
+Put a test in the layer it exercises; rules: [test strategy](../../docs/solution-plan/quality-harness.md#test-strategy).
+Stub the network (`vi.stubGlobal("fetch", ...)`), not the unit under test. Query by role and accessible name.

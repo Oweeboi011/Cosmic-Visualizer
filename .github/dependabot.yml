@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: npm
-    directory: /src/frontend
+    directory: /
     schedule:
       interval: weekly
       day: monday
@@ -12,27 +12,30 @@ updates:
         patterns:
           - "@types/*"
           - "eslint*"
-          - "prettier*"
           - "vitest*"
           - "@vitest/*"
           - "@playwright/*"
-          - "@stryker-mutator/*"
-          - "husky"
-          - "lint-staged"
-          - "@commitlint/*"
+        exclude-patterns:
+          - "@types/three"
+      # three.js and its React bindings/types must move together.
+      three:
+        patterns:
+          - "three"
+          - "@types/three"
+          - "@react-three/*"
     ignore:
-      # Firebase major versions require coordinated migration
-      - dependency-name: "firebase"
+      # Next.js majors need a coordinated migration (see AGENTS.md).
+      - dependency-name: "next"
         update-types: ["version-update:semver-major"]
-      - dependency-name: "firebase-admin"
+      - dependency-name: "eslint-config-next"
         update-types: ["version-update:semver-major"]
 
-  - package-ecosystem: pip
-    directory: /src/backend
+  - package-ecosystem: npm
+    directory: /visuals
     schedule:
       interval: weekly
       day: monday
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     target-branch: main
 
   - package-ecosystem: github-actions

@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { Modal } from "@/components/ui/Modal";
 import { Badge } from "@/components/ui/Badge";
-import { GalaxySceneLoader } from "@/components/galaxy3d/GalaxySceneLoader";
-import { hashStringToSeed } from "@/lib/galaxy3d/seed";
+import { PlanetViewerLoader } from "@/components/space3d/SceneLoaders";
+import { getPlanetAppearance } from "@/lib/space3d/planetAppearance";
 import type { SolarSystemPlanet } from "@/types/nasa";
 
 export function SolarSystemPlanetModal({
@@ -14,21 +14,21 @@ export function SolarSystemPlanetModal({
   planet: SolarSystemPlanet;
   onClose: () => void;
 }) {
-  const seed = hashStringToSeed(planet.name);
+  const { axialTiltDeg } = getPlanetAppearance(planet.name);
 
   return (
     <Modal title={planet.name} onClose={onClose}>
       <div className="flex flex-col gap-6">
         <Badge tone="neutral">{planet.type}</Badge>
 
-        <GalaxySceneLoader seed={seed} />
+        <PlanetViewerLoader name={planet.name} />
 
         <section>
           <h3 className="mb-1 text-sm font-semibold text-text-primary">Overview</h3>
           <p className="text-sm text-text-muted">{planet.description}</p>
         </section>
 
-        <section className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
+        <section className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-5">
           <div>
             <p className="text-xs text-text-muted">Diameter</p>
             <p className="text-text-primary">{planet.diameterKm.toLocaleString()} km</p>
@@ -44,6 +44,10 @@ export function SolarSystemPlanetModal({
           <div>
             <p className="text-xs text-text-muted">Day length</p>
             <p className="text-text-primary">{planet.dayLengthHours.toLocaleString()} hrs</p>
+          </div>
+          <div>
+            <p className="text-xs text-text-muted">Axial tilt</p>
+            <p className="text-text-primary">{axialTiltDeg}°</p>
           </div>
         </section>
 

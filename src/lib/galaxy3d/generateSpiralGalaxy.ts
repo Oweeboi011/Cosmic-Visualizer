@@ -4,6 +4,8 @@
  * distribution follows a logarithmic-spiral-arm model for a plausible galaxy shape.
  */
 
+import { gaussianRandom, lerpRgb, mulberry32, type Rgb } from "@/lib/space3d/random";
+
 export interface SpiralGalaxyParams {
   particleCount: number;
   armCount: number;
@@ -21,7 +23,7 @@ export interface SpiralGalaxyResult {
   clickableIndices: number[];
 }
 
-export const DEFAULT_SPIRAL_GALAXY_PARAMS: SpiralGalaxyParams = {
+const DEFAULT_SPIRAL_GALAXY_PARAMS: SpiralGalaxyParams = {
   particleCount: 20000,
   armCount: 3,
   armSpread: 0.4,
@@ -32,47 +34,23 @@ export const DEFAULT_SPIRAL_GALAXY_PARAMS: SpiralGalaxyParams = {
   clickableStarCount: 80,
 };
 
-/** Deterministic PRNG (mulberry32) so generation is reproducible/testable. */
-function mulberry32(seed: number): () => number {
-  let a = seed >>> 0;
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
+const CORE_COLOR: Rgb = [0.85, 0.9, 1]; // hot white/blue
+const ARM_COLOR: Rgb = [1, 0.92, 0.75]; // warm yellow/white
+const OUTER_COLOR: Rgb = [0.55, 0.68, 1]; // cool blue
+
+export function colorForRadius(t: number): Rgb {
+  if (t < 0.5) return lerpRgb(CORE_COLOR, ARM_COLOR, t / 0.5);
+  return lerpRgb(ARM_COLOR, OUTER_COLOR, (t - 0.5) / 0.5);
 }
 
-function gaussianRandom(rand: () => number): number {
-  const u = Math.max(rand(), 1e-6);
-  const v = rand();
-  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
-}
-
-const CORE_COLOR: [number, number, number] = [0.85, 0.9, 1]; // hot white/blue
-const ARM_COLOR: [number, number, number] = [1, 0.92, 0.75]; // warm yellow/white
-const OUTER_COLOR: [number, number, number] = [0.55, 0.68, 1]; // cool blue
-
-function lerp(a: number, b: number, t: number): number {
-  return a + (b - a) * t;
-}
-
-function colorForRadius(t: number): [number, number, number] {
-  if (t < 0.5) {
-    const local = t / 0.5;
-    return [
-      lerp(CORE_COLOR[0], ARM_COLOR[0], local),
-      lerp(CORE_COLOR[1], ARM_COLOR[1], local),
-      lerp(CORE_COLOR[2], ARM_COLOR[2], local),
-    ];
+/** Evenly samples up to `count` indices from the candidate list. */
+export function pickClickableIndices(candidates: number[], count: number): number[] {
+  const picked: number[] = [];
+  const step = Math.max(1, Math.floor(candidates.length / count));
+  for (let i = 0; i < candidates.length && picked.length < count; i += step) {
+    picked.push(candidates[i]);
   }
-  const local = (t - 0.5) / 0.5;
-  return [
-    lerp(ARM_COLOR[0], OUTER_COLOR[0], local),
-    lerp(ARM_COLOR[1], OUTER_COLOR[1], local),
-    lerp(ARM_COLOR[2], OUTER_COLOR[2], local),
-  ];
+  return picked;
 }
 
 /**
@@ -80,12 +58,8 @@ function colorForRadius(t: number): [number, number, number] {
  * indices flagged as "clickable stars" (biased away from the dense core so they're
  * visually distinguishable).
  */
-export function generateSpiralGalaxy(
-  params: Partial<SpiralGalaxyParams> = {}
-): SpiralGalaxyResult {
-  const defined = Object.fromEntries(
-    Object.entries(params).filter(([, v]) => v !== undefined)
-  );
+export function generateSpiralGalaxy(params: Partial<SpiralGalaxyParams> = {}): SpiralGalaxyResult {
+  const defined = Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined));
   const p = { ...DEFAULT_SPIRAL_GALAXY_PARAMS, ...defined };
   const rand = mulberry32(p.seed);
 
@@ -127,15 +101,7 @@ export function generateSpiralGalaxy(
     }
   }
 
-  const clickableIndices: number[] = [];
-  const step = Math.max(1, Math.floor(candidateIndices.length / p.clickableStarCount));
-  for (
-    let i = 0;
-    i < candidateIndices.length && clickableIndices.length < p.clickableStarCount;
-    i += step
-  ) {
-    clickableIndices.push(candidateIndices[i]);
-  }
+  const clickableIndices = pickClickableIndices(candidateIndices, p.clickableStarCount);
 
   return { positions, colors, clickableIndices };
 }

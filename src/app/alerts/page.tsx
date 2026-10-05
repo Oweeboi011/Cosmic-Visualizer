@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { AlertFilterBar } from "@/components/alerts/AlertFilterBar";
 import { AlertTimeline } from "@/components/alerts/AlertTimeline";
@@ -5,6 +6,8 @@ import { NeoWidget } from "@/components/alerts/NeoWidget";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { getAlerts } from "@/lib/nasa/donki";
 import { getNeos } from "@/lib/nasa/neows";
+
+export const metadata: Metadata = { title: "Cosmic Alerts" };
 
 export default async function AlertsPage({
   searchParams,
