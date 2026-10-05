@@ -11,14 +11,15 @@ flowchart LR
   ado["Azure DevOps pipeline<br/>.azuredevops/pipelines/ci-cd.yml"] -. staged, disabled .-> deploy
 ```
 
-| Stage      | Where                                                     | Blocking                                      |
-| ---------- | --------------------------------------------------------- | --------------------------------------------- |
-| Pre-commit | Developer machine (`.husky/pre-commit`)                   | yes, locally                                  |
-| CI         | `.github/workflows/ci.yml` on every PR and push to `main` | yes (make it a required check)                |
-| Security   | `.github/workflows/security.yml` on PRs, `main`, weekly   | audit, gitleaks, CodeQL yes; Semgrep advisory |
-| AI review  | `.github/workflows/agent-review.yml` on PRs               | advisory comment                              |
-| Deploy     | `azd deploy` by a maintainer from `main`                  | —                                             |
-| ADO CI/CD  | `.azuredevops/pipelines/ci-cd.yml`                        | **not enabled** (`trigger: none`)             |
+| Stage      | Where                                                                                                                 | Blocking                                      |
+| ---------- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| Pre-commit | Developer machine (`.husky/pre-commit`)                                                                               | yes, locally                                  |
+| CI         | `.github/workflows/ci.yml` on every PR and push to `main`                                                             | yes (make it a required check)                |
+| Security   | `.github/workflows/security.yml` on PRs, `main`, weekly                                                               | audit, gitleaks, CodeQL yes; Semgrep advisory |
+| AI review  | `.github/workflows/agent-review.yml` on PRs                                                                           | advisory comment                              |
+| Deploy     | `azd deploy` by a maintainer from `main`                                                                              | —                                             |
+| Pages      | `.github/workflows/pages.yml`: `visuals/` prototype only ([ADR-0009](../adr/0009-publish-visuals-to-github-pages.md)) | —                                             |
+| ADO CI/CD  | `.azuredevops/pipelines/ci-cd.yml`                                                                                    | **not enabled** (`trigger: none`)             |
 
 GitHub CI and the ADO pipeline call the same npm scripts, so there's one definition of "green".
 See [ADR-0006](../adr/0006-ci-cd-github-now-ado-staged.md).

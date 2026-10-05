@@ -13,6 +13,7 @@ only the **Status** line changes; to change a decision, add an ADR that supersed
 | [0006](0006-ci-cd-github-now-ado-staged.md)         | GitHub Actions now; Azure DevOps staged; `azd deploy` interim | Accepted           |
 | [0007](0007-visuals-standalone-app.md)              | `visuals/` is a standalone prototype                          | Superseded by 0008 |
 | [0008](0008-gate-visuals-typecheck-and-audit.md)    | Gate `visuals/` on typecheck and dependency audit             | Accepted           |
+| [0009](0009-publish-visuals-to-github-pages.md)     | Publish `visuals/` to GitHub Pages                            | Accepted           |
 
 ## Format
 
