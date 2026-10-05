@@ -53,6 +53,13 @@ describe("clampDateRange", () => {
     });
   });
 
+  it("bounds a reversed range that is longer than maxDays", () => {
+    expect(clampDateRange("2026-10-01", "2020-01-01", 30)).toEqual({
+      startDate: "2026-09-01",
+      endDate: "2026-10-01",
+    });
+  });
+
   it("ignores invalid dates", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-09-30T12:00:00Z"));

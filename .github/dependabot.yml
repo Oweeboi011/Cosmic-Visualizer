@@ -30,6 +30,14 @@ updates:
       - dependency-name: "eslint-config-next"
         update-types: ["version-update:semver-major"]
 
+  - package-ecosystem: npm
+    directory: /visuals
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    target-branch: main
+
   - package-ecosystem: github-actions
     directory: /
     schedule:

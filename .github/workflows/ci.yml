@@ -74,3 +74,23 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  # visuals/ is a standalone prototype (ADR-0008): typecheck + prod audit only, no app harness.
+  visuals:
+    name: Visuals prototype (typecheck, audit)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: visuals
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: visuals/package-lock.json
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm audit --omit=dev --audit-level=high

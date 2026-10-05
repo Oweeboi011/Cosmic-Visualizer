@@ -37,6 +37,12 @@ What each check enforces and why: [quality harness](../solution-plan/quality-har
 architecture check. It takes a few seconds. Bypassing it with `--no-verify` doesn't skip
 anything that matters: CI runs the same checks and more.
 
+## Code review
+
+Before opening a PR, run `/code-review` in Claude Code on the branch (`/code-review high` for
+risky changes, `--fix` to apply findings). It reviews correctness and, via the project rules,
+layering, reuse of `ui/` and SOLID. Fix or answer every finding; the tools above can't judge design.
+
 ## Writing code
 
 - Put new UI primitives in `src/components/ui` before copying markup a second time. Existing
