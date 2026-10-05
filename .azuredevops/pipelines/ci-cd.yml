@@ -1,7 +1,7 @@
 # Azure DevOps CI/CD — STAGED, NOT ENABLED.
 #
-# Deploys run manually with `azd deploy` for now (docs/solution-plan/delivery.md). This
-# pipeline automates the same steps. It does nothing until someone enables it:
+# Production is hosted on Vercel (docs/adr/0010-host-on-vercel.md). This pipeline is kept for an
+# Azure move; its azd stage needs azure.yaml + infra first. It does nothing until enabled:
 #   1. Create the pipeline in ADO from this file.
 #   2. Create an Azure Resource Manager service connection (workload identity federation)
 #      and set the variables below in a variable group named `cosmic-visualizer`.

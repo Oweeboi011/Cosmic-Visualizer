@@ -1,6 +1,6 @@
 # 0006. GitHub Actions now; Azure DevOps staged; azd deploy in the interim
 
-- Status: Accepted
+- Status: Accepted; deploy part superseded by [0010](0010-host-on-vercel.md)
 - Date: 2026-10-05
 
 ## Context

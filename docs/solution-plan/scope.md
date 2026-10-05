@@ -33,8 +33,7 @@
 
 ## Backlog
 
-| Item                                                                         | Why it's open                                                              |
-| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `azure.yaml` + infrastructure for `azd`                                      | Hosting target not chosen yet ([delivery](delivery.md#open-decisions))     |
-| Lighthouse / Web Vitals budget in CI                                         | Generator budgets cover CPU; page-level budgets need a stable deployed URL |
-| Image Library titles aren't HTML-stripped (descriptions and feed titles are) | Rendered as text, so it's safe; cosmetic only                              |
+| Item                                                                         | Why it's open                                                         |
+| ---------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Lighthouse / Web Vitals budget in CI                                         | Generator budgets cover CPU; now possible against Vercel preview URLs |
+| Image Library titles aren't HTML-stripped (descriptions and feed titles are) | Rendered as text, so it's safe; cosmetic only                         |

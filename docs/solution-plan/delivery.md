@@ -7,7 +7,7 @@ flowchart LR
   dev[Commit] -->|pre-commit hook<br/>secrets · lint · format · arch| push[Push / PR]
   push --> gh[GitHub Actions CI<br/>verify · perf · build · e2e]
   gh --> sec[Security workflow<br/>audit · gitleaks · CodeQL · Semgrep]
-  gh -->|merge to main| deploy["azd deploy (manual, for now)"]
+  gh -->|merge to main| deploy["Vercel (auto: main → prod, PR → preview)"]
   ado["Azure DevOps pipeline<br/>.azuredevops/pipelines/ci-cd.yml"] -. staged, disabled .-> deploy
 ```
 
@@ -17,24 +17,18 @@ flowchart LR
 | CI         | `.github/workflows/ci.yml` on every PR and push to `main`                                                             | yes (make it a required check)                |
 | Security   | `.github/workflows/security.yml` on PRs, `main`, weekly                                                               | audit, gitleaks, CodeQL yes; Semgrep advisory |
 | AI review  | `.github/workflows/agent-review.yml` on PRs                                                                           | advisory comment                              |
-| Deploy     | `azd deploy` by a maintainer from `main`                                                                              | —                                             |
+| Deploy     | Vercel, Git-connected ([ADR-0010](../adr/0010-host-on-vercel.md))                                                     | merge only green `main`                       |
 | Pages      | `.github/workflows/pages.yml`: `visuals/` prototype only ([ADR-0009](../adr/0009-publish-visuals-to-github-pages.md)) | —                                             |
 | ADO CI/CD  | `.azuredevops/pipelines/ci-cd.yml`                                                                                    | **not enabled** (`trigger: none`)             |
 
 GitHub CI and the ADO pipeline call the same npm scripts, so there's one definition of "green".
 See [ADR-0006](../adr/0006-ci-cd-github-now-ado-staged.md).
 
-## Deploying (interim: azd)
+## Deploying
 
-```bash
-azd auth login
-azd env select <env>         # or `azd env new <env>` the first time
-azd env set NASA_API_KEY <key>
-azd deploy
-```
-
-Deploy only from a `main` commit whose CI run is green. The app needs only one runtime
-setting, `NASA_API_KEY` (server-only, optional, falls back to `DEMO_KEY`).
+Vercel project `cosmic-visualizer` deploys `main` to production and each PR to a preview URL.
+`NASA_API_KEY` is a sensitive env var (production + preview); manage it with `npx vercel env`.
+Rollback: promote an earlier deployment in the Vercel dashboard (`npx vercel rollback`).
 
 ## Enabling the ADO pipeline
 
@@ -48,10 +42,9 @@ setting, `NASA_API_KEY` (server-only, optional, falls back to `DEMO_KEY`).
 
 ## Open decisions
 
-| Decision                                                                                                                                                            | Blocks                         | Owner      |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ---------- |
-| Hosting target (App Service, Container Apps or Static Web Apps hybrid). `azure.yaml` and `infra/` don't exist yet, so `azd deploy` can't run until this is decided. | first deploy, ADO deploy stage | maintainer |
-| Whether ADO replaces GitHub Actions or runs alongside it                                                                                                            | turning ADO on                 | maintainer |
+| Decision                                                 | Blocks         | Owner      |
+| -------------------------------------------------------- | -------------- | ---------- |
+| Whether ADO replaces GitHub Actions or runs alongside it | turning ADO on | maintainer |
 
 Next 16 needs a Node server here: every page renders dynamically because of the CSP nonce
 ([ADR-0004](../adr/0004-nonce-csp-via-proxy.md)). A static-only host won't work.
