@@ -34,21 +34,21 @@
     "three": "^0.186.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.1",
+    "@playwright/test": "^1.63.0",
     "@secretlint/secretlint-rule-preset-recommend": "^13.0.7",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
-    "@types/node": "^20",
+    "@types/node": "^26",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^6.0.5",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "^5.0.3",
     "dependency-cruiser": "^18.5.0",
-    "eslint": "^9",
-    "eslint-config-next": "16.3.6",
+    "eslint": "^10",
+    "eslint-config-next": "16.3.8",
     "eslint-plugin-sonarjs": "^4.2.2",
     "husky": "^9.1.7",
     "jscpd": "^5.4.0",
@@ -59,7 +59,7 @@
     "secretlint": "^13.0.7",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.3"
   },
   "lint-staged": {
     "*": "secretlint",
