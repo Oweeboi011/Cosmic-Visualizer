@@ -24,8 +24,5 @@ layering, duplication and dead-code limits are enforced by `npm run verify`; see
 
 ## Tests
 
-- Put a test in the layer it exercises: `tests/unit`, `tests/component`, `tests/integration`,
-  `tests/performance` or `tests/e2e`.
-- Stub the network (`vi.stubGlobal("fetch", ...)`), not the unit under test.
-- Query by role and accessible name. Assert behavior, not snapshots.
-- No committed `.only`/`.skip`. No live network, wall-clock or randomness in unit tests.
+Put a test in the layer it exercises; rules: [test strategy](../../docs/solution-plan/quality-harness.md#test-strategy).
+Stub the network (`vi.stubGlobal("fetch", ...)`), not the unit under test. Query by role and accessible name.

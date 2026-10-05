@@ -1,6 +1,6 @@
 # 0007. visuals/ is a standalone prototype
 
-- Status: Accepted
+- Status: Superseded by [0008](0008-gate-visuals-typecheck-and-audit.md)
 - Date: 2026-10-05
 
 ## Context

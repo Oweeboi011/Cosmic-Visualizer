@@ -39,18 +39,35 @@ function cached<T extends THREE.Texture>(key: string, build: () => T): T {
   return texture;
 }
 
-// One shared worker; `null` once creation has failed, so we stop retrying.
+// One shared worker; `null` once it has failed, so we stop using it.
 let worker: Worker | null | undefined;
 let nextRequestId = 0;
-const workerCallbacks = new Map<number, (texture: TextureData) => void>();
+interface WorkerJob {
+  request: TextureRequest;
+  resolve: (texture: TextureData) => void;
+  reject: (error: unknown) => void;
+}
+const workerJobs = new Map<number, WorkerJob>();
+
+/** Inline generation: slower to first frame, but still correct. */
+const generateInline = (request: TextureRequest) => Promise.resolve().then(() => generateTexture(request));
 
 function getWorker(): Worker | null {
   if (worker !== undefined) return worker;
   try {
     worker = new Worker(new URL("./texture.worker.ts", import.meta.url), { type: "module" });
     worker.onmessage = (event: MessageEvent<{ id: number; texture: TextureData }>) => {
-      workerCallbacks.get(event.data.id)?.(event.data.texture);
-      workerCallbacks.delete(event.data.id);
+      workerJobs.get(event.data.id)?.resolve(event.data.texture);
+      workerJobs.delete(event.data.id);
+    };
+    // A module worker that fails to load or run reports here, not from the constructor.
+    // Drop it and finish every waiting job inline so no texture promise hangs.
+    worker.onerror = () => {
+      worker?.terminate();
+      worker = null;
+      for (const { request, resolve, reject } of workerJobs.values())
+        generateInline(request).then(resolve, reject);
+      workerJobs.clear();
     };
   } catch {
     worker = null;
@@ -60,11 +77,10 @@ function getWorker(): Worker | null {
 
 function generateOffMainThread(request: TextureRequest): Promise<TextureData> {
   const w = getWorker();
-  // Without worker support, generate inline: slower to first frame, but still correct.
-  if (!w) return Promise.resolve().then(() => generateTexture(request));
-  return new Promise((resolve) => {
+  if (!w) return generateInline(request);
+  return new Promise((resolve, reject) => {
     const id = nextRequestId++;
-    workerCallbacks.set(id, resolve);
+    workerJobs.set(id, { request, resolve, reject });
     w.postMessage({ id, request });
   });
 }
@@ -74,6 +90,8 @@ function loadTexture(request: TextureRequest): Promise<THREE.Texture> {
   let promise = pending.get(key);
   if (!promise) {
     promise = generateOffMainThread(request).then((data) => cached(key, () => toDataTexture(data)));
+    // A failed generation must not pin the key: drop it so a later mount can retry.
+    promise.catch(() => pending.delete(key));
     pending.set(key, promise);
   }
   return promise;
@@ -90,9 +108,13 @@ export function useProceduralTexture(request: TextureRequest | null): THREE.Text
   useEffect(() => {
     if (!request || !key || cache.has(key)) return;
     let cancelled = false;
-    loadTexture(request).then((texture) => {
-      if (!cancelled) setLoaded({ key, texture });
-    });
+    loadTexture(request).then(
+      (texture) => {
+        if (!cancelled) setLoaded({ key, texture });
+      },
+      // Keep the plain material; the texture is cosmetic.
+      (error: unknown) => console.warn("Procedural texture failed", key, error),
+    );
     return () => {
       cancelled = true;
     };

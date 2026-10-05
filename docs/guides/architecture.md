@@ -79,4 +79,4 @@ imports `server-only`. `src/proxy.ts` sets a per-request nonce CSP. See
 | `src/app/api/gallery/` | The only API route (used by the client-side star modal)                                                                             |
 | `src/proxy.ts`         | Next 16 "proxy" (formerly middleware): CSP nonce                                                                                    |
 | `tests/`               | `unit`, `component`, `integration`, `performance`, `e2e` — see [quality harness](../solution-plan/quality-harness.md#test-strategy) |
-| `visuals/`             | Separate Vite + Three.js prototype with its own toolchain ([ADR-0007](../adr/0007-visuals-standalone-app.md))                       |
+| `visuals/`             | Separate Vite + Three.js prototype with its own toolchain ([ADR-0008](../adr/0008-gate-visuals-typecheck-and-audit.md))             |

@@ -11,6 +11,30 @@ const SERVER_ONLY_IMPORTS = {
   message: "src/lib/nasa is server-only (holds NASA_API_KEY). Fetch in a Server Component and pass props.",
 };
 
+/** Raw-HTML sinks bypass React escaping; dialogs must go through ui/Modal. */
+const BANNED_SYNTAX = [
+  {
+    selector: "AssignmentExpression[left.property.name=/^(innerHTML|outerHTML)$/]",
+    message: "Raw HTML sink: render with JSX instead.",
+  },
+  {
+    selector:
+      "CallExpression[callee.object.name='document'][callee.property.name=/^(write|writeln)$/], CallExpression[callee.property.name='insertAdjacentHTML']",
+    message: "Raw HTML sink: render with JSX instead.",
+  },
+];
+const DIALOG_ROLE = {
+  selector: "JSXAttribute[name.name='role'][value.value='dialog']",
+  message: "Use components/ui/Modal: it manages focus, Escape and nesting.",
+};
+/** Committed focus/skip silently shrinks the suite. */
+const FOCUSED_TESTS = {
+  // it.only / describe.skip, and Playwright's test.describe.only.
+  selector:
+    "CallExpression[callee.property.name=/^(only|skip)$/]:matches([callee.object.name=/^(describe|it|test)$/], [callee.object.property.name='describe'])",
+  message: "Don't commit .only/.skip.",
+};
+
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
@@ -49,13 +73,8 @@ const eslintConfig = defineConfig([
       "no-implied-eval": "error",
       "no-new-func": "error",
       "react/no-danger": "error",
-      "no-restricted-syntax": [
-        "error",
-        {
-          selector: "JSXAttribute[name.name='role'][value.value='dialog']",
-          message: "Use components/ui/Modal: it manages focus, Escape and nesting.",
-        },
-      ],
+      "no-console": ["error", { allow: ["warn", "error"] }],
+      "no-restricted-syntax": ["error", ...BANNED_SYNTAX],
       "no-restricted-imports": [
         "error",
         {
@@ -97,8 +116,9 @@ const eslintConfig = defineConfig([
     rules: { "max-params": ["error", 6] },
   },
   {
-    files: ["src/components/ui/Modal.tsx"],
-    rules: { "no-restricted-syntax": "off" },
+    files: ["src/**/*.{ts,tsx}"],
+    ignores: ["src/components/ui/Modal.tsx"],
+    rules: { "no-restricted-syntax": ["error", ...BANNED_SYNTAX, DIALOG_ROLE] },
   },
   {
     files: ["tests/**/*.{ts,tsx}"],
@@ -106,6 +126,7 @@ const eslintConfig = defineConfig([
       // Test tables and fixtures legitimately repeat shapes.
       "sonarjs/no-identical-functions": "off",
       "max-params": "off",
+      "no-restricted-syntax": ["error", ...BANNED_SYNTAX, FOCUSED_TESTS],
     },
   },
   globalIgnores([

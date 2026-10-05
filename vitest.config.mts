@@ -48,7 +48,7 @@ export default defineConfig({
       ],
       // Canvas/WebGL-only code has no meaningful jsdom coverage; the e2e suite drives it.
       exclude: ["src/components/ui/Starfield.tsx"],
-      thresholds: { statements: 85, branches: 50, functions: 85, lines: 85 },
+      thresholds: { statements: 90, branches: 75, functions: 88, lines: 90 },
     },
   },
 });

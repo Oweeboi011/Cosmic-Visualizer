@@ -24,17 +24,12 @@ export function clampDateRange(
 
   let end = validEnd ?? toIsoDate(today);
   let start = validStart ?? toIsoDate(new Date(today.getTime() - defaultDays * DAY_MS));
+  // Start after end: swap first, so the span bound below applies to the ordered range too.
+  if (start > end) [start, end] = [end, start];
 
-  const startMs = new Date(`${start}T00:00:00Z`).getTime();
   const endMs = new Date(`${end}T00:00:00Z`).getTime();
-  const spanDays = (endMs - startMs) / DAY_MS;
-
-  if (spanDays > maxDays) {
-    start = toIsoDate(new Date(endMs - maxDays * DAY_MS));
-  } else if (spanDays < 0) {
-    // start after end — swap to keep the range sane
-    [start, end] = [end, start];
-  }
+  const spanDays = (endMs - new Date(`${start}T00:00:00Z`).getTime()) / DAY_MS;
+  if (spanDays > maxDays) start = toIsoDate(new Date(endMs - maxDays * DAY_MS));
 
   return { startDate: start, endDate: end };
 }

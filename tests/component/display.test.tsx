@@ -4,6 +4,8 @@ import { AlertTimeline } from "@/components/alerts/AlertTimeline";
 import { NeoWidget } from "@/components/alerts/NeoWidget";
 import { FindingsList } from "@/components/findings/FindingsList";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
+import { Footer } from "@/components/layout/Footer";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { FormattedDate } from "@/components/ui/FormattedDate";
 import { Modal } from "@/components/ui/Modal";
@@ -201,5 +203,20 @@ describe("Modal", () => {
     unmount();
     expect(document.activeElement).toBe(opener);
     opener.remove();
+  });
+});
+
+describe("layout", () => {
+  it("PageHeader renders a level-1 heading, description and action", () => {
+    render(<PageHeader title="Alerts" description="Space weather" action={<button>Refresh</button>} />);
+    expect(screen.getByRole("heading", { level: 1, name: "Alerts" })).toBeInTheDocument();
+    expect(screen.getByText("Space weather")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Refresh" })).toBeInTheDocument();
+  });
+
+  it("Footer credits the data sources with external links", () => {
+    render(<Footer />);
+    expect(screen.getByRole("contentinfo")).toBeInTheDocument();
+    expect(screen.getAllByRole("link").length).toBeGreaterThanOrEqual(2);
   });
 });

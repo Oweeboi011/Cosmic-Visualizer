@@ -29,7 +29,7 @@
 
 - User accounts, saved state, or any write path.
 - Agencies without a public feed (JAXA, NAOJ, STScI, MPIA have HTML-only news). They're excluded deliberately rather than scraped.
-- `visuals/` (Vite prototype with a VRM avatar chat) is not shipped with the app ([ADR-0007](../adr/0007-visuals-standalone-app.md)).
+- `visuals/` (Vite prototype with a VRM avatar chat) is not shipped with the app ([ADR-0008](../adr/0008-gate-visuals-typecheck-and-audit.md)).
 
 ## Backlog
 
