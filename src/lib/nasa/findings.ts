@@ -3,6 +3,7 @@ import { fetchText } from "@/lib/nasa/client";
 import { FINDING_AGENCIES, NasaApiError, type FindingItem, type FindingAgency } from "@/types/nasa";
 import fallbackData from "@/data/findings.fallback.json";
 import { stripHtml } from "@/lib/text";
+import { safeHttpUrl } from "@/lib/utils";
 
 /**
  * Verified live at implementation time (2026-08): all three of these are standard
@@ -20,17 +21,6 @@ const AGENCY_FEEDS: Record<FindingAgency, string> = {
 const REVALIDATE_SECONDS = 6 * 60 * 60; // 6h
 
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
-
-/** Feed content is third-party and rendered as href/src, so only allow web URLs. */
-function safeHttpUrl(value: string | undefined): string | undefined {
-  if (!value) return undefined;
-  try {
-    const url = new URL(value.trim());
-    return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : undefined;
-  } catch {
-    return undefined;
-  }
-}
 
 function extractFirstImage(html: string): string | undefined {
   const match = html.match(/<img[^>]*\ssrc="([^"]+)"/);
@@ -118,7 +108,7 @@ export async function getFindings(params: GetFindingsParams = {}): Promise<Findi
     } else {
       console.warn(
         `[nasa/findings] ${agency} feed fetch/parse failed:`,
-        result.reason instanceof Error ? result.reason.message : result.reason
+        result.reason instanceof Error ? result.reason.message : result.reason,
       );
       if (agency === "NASA") {
         items.push(...getFallback());

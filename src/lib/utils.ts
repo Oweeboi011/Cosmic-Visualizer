@@ -1,5 +1,16 @@
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
+/** Third-party URLs end up as href/src, so only web URLs may pass. */
+export function safeHttpUrl(value: string | undefined | null): string | undefined {
+  if (!value) return undefined;
+  try {
+    const url = new URL(value.trim());
+    return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export const DAY_MS = 24 * 60 * 60 * 1000;
 
 export function isValidDateString(value: string | undefined | null): value is string {

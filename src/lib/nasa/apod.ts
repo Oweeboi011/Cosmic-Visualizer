@@ -1,6 +1,6 @@
 import { fetchNasaApi } from "@/lib/nasa/client";
 import type { ApodItem } from "@/types/nasa";
-import { DAY_MS, clampDateRange, clampNumber, isValidDateString, toIsoDate } from "@/lib/utils";
+import { DAY_MS, clampDateRange, clampNumber, isValidDateString, safeHttpUrl, toIsoDate } from "@/lib/utils";
 
 interface RawApod {
   date: string;
@@ -14,14 +14,17 @@ interface RawApod {
 
 const REVALIDATE_SECONDS = 6 * 60 * 60; // 6h — APOD updates once per day
 
-function normalize(raw: RawApod): ApodItem {
+/** Entries whose `url` isn't a web URL are dropped: it becomes an href/src. */
+function normalize(raw: RawApod): ApodItem | null {
+  const url = safeHttpUrl(raw.url);
+  if (!url) return null;
   return {
     date: raw.date,
     title: raw.title,
     explanation: raw.explanation,
     mediaType: raw.media_type === "image" || raw.media_type === "video" ? raw.media_type : "other",
-    url: raw.url,
-    hdurl: raw.hdurl,
+    url,
+    hdurl: safeHttpUrl(raw.hdurl),
     copyright: raw.copyright,
   };
 }
@@ -62,5 +65,8 @@ export async function getApod(params: GetApodParams = {}): Promise<ApodItem[]> {
   });
 
   const items = Array.isArray(raw) ? raw : [raw];
-  return items.map(normalize).sort((a, b) => (a.date < b.date ? 1 : -1));
+  return items
+    .map(normalize)
+    .filter((item): item is ApodItem => item !== null)
+    .sort((a, b) => (a.date < b.date ? 1 : -1));
 }

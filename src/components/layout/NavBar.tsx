@@ -53,8 +53,8 @@ export function NavBar() {
       className="sticky top-0 z-40 border-b border-space-border bg-space-bg/80 backdrop-blur-md"
       onKeyDown={handleKeyDown}
     >
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 sm:px-6">
-        <Link href="/" className="flex items-center gap-2 font-semibold text-text-primary">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 lg:flex-nowrap py-3 sm:px-6">
+        <Link href="/" className="flex shrink-0 items-center gap-2 font-semibold text-text-primary">
           <Telescope className="h-5 w-5 text-nebula-primary" aria-hidden="true" />
           Cosmic Visualizer
         </Link>
@@ -67,14 +67,18 @@ export function NavBar() {
           onClick={() => setOpenOnPath(menuOpen ? null : pathname)}
           className="ml-auto rounded-md p-2 text-text-muted transition-colors hover:text-text-primary lg:hidden"
         >
-          {menuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
+          {menuOpen ? (
+            <X className="h-5 w-5" aria-hidden="true" />
+          ) : (
+            <Menu className="h-5 w-5" aria-hidden="true" />
+          )}
         </button>
         <nav
           id="site-nav"
           aria-label="Sections"
           className={`${
             menuOpen ? "flex" : "hidden"
-          } w-full flex-col gap-1 pb-2 text-sm lg:flex lg:w-auto lg:flex-1 lg:flex-row lg:flex-wrap lg:gap-x-4 lg:gap-y-1 lg:pb-0`}
+          } w-full flex-col gap-1 pb-2 text-sm lg:flex lg:w-auto lg:flex-1 lg:flex-row lg:justify-end lg:gap-x-0.5 lg:pb-0`}
         >
           {SECTIONS.slice(1).map(({ href, label, icon: Icon }) => {
             const active = pathname === href || pathname?.startsWith(`${href}/`);
@@ -85,13 +89,14 @@ export function NavBar() {
                 aria-current={active ? "page" : undefined}
                 // Clicking the current page doesn't change the path, so close explicitly.
                 onClick={() => setOpenOnPath(null)}
-                className={`flex items-center gap-1.5 rounded-md px-2 py-2 transition-colors lg:py-1 ${
+                className={`flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-2 transition-colors lg:py-1.5 ${
                   active
-                    ? "text-nebula-primary"
-                    : "text-text-muted hover:text-text-primary"
+                    ? "bg-nebula-primary/15 text-nebula-primary"
+                    : "text-text-muted hover:bg-space-surface hover:text-text-primary"
                 }`}
               >
-                <Icon className="h-4 w-4" aria-hidden="true" />
+                {/* Icons only in the collapsed menu: inline, nine of them crowd the bar onto two rows. */}
+                <Icon className="h-4 w-4 lg:hidden" aria-hidden="true" />
                 {label}
               </Link>
             );

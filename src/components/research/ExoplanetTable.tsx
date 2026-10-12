@@ -29,8 +29,8 @@ export function ExoplanetTable({ items }: { items: ExoplanetItem[] }) {
         <tbody className="divide-y divide-space-border">
           {items.map((p) => (
             <tr key={`${p.name}-${p.hostname}`} className="hover:bg-space-surface/60">
-              <td className="px-4 py-3 font-medium text-text-primary">{p.name}</td>
-              <td className="px-4 py-3 text-text-muted">{p.hostname}</td>
+              <td className="whitespace-nowrap px-4 py-3 font-medium text-text-primary">{p.name}</td>
+              <td className="whitespace-nowrap px-4 py-3 text-text-muted">{p.hostname}</td>
               <td className="px-4 py-3 text-text-muted">{p.discoveryYear ?? "—"}</td>
               <td className="px-4 py-3 text-text-muted">{p.discoveryMethod}</td>
               <td className="px-4 py-3 text-text-muted">{formatNumber(p.radiusEarth)}</td>

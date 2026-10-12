@@ -6,6 +6,7 @@ import { FindingsList } from "@/components/findings/FindingsList";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { Footer } from "@/components/layout/Footer";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { ArrowLink } from "@/components/ui/ArrowLink";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { FormattedDate } from "@/components/ui/FormattedDate";
 import { Modal } from "@/components/ui/Modal";
@@ -207,6 +208,13 @@ describe("Modal", () => {
 });
 
 describe("layout", () => {
+  it("ArrowLink is an in-app link named by its text, with a decorative arrow", () => {
+    render(<ArrowLink href="/alerts">View all alerts</ArrowLink>);
+    const link = screen.getByRole("link", { name: "View all alerts" });
+    expect(link).toHaveAttribute("href", "/alerts");
+    expect(link.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+  });
+
   it("PageHeader renders a level-1 heading, description and action", () => {
     render(<PageHeader title="Alerts" description="Space weather" action={<button>Refresh</button>} />);
     expect(screen.getByRole("heading", { level: 1, name: "Alerts" })).toBeInTheDocument();

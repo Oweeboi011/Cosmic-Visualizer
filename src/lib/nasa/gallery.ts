@@ -1,5 +1,6 @@
 import { fetchJson } from "@/lib/nasa/client";
 import { stripHtml } from "@/lib/text";
+import { safeHttpUrl } from "@/lib/utils";
 import type { GalleryAsset, GalleryItem } from "@/types/nasa";
 
 const IMAGES_API_BASE = "https://images-api.nasa.gov";
@@ -9,9 +10,9 @@ const DEFAULT_QUERY = "galaxy";
 export const GALLERY_PAGE_SIZE = 100;
 export const GALLERY_MAX_PAGE = 100;
 
-/** Asset hrefs come back as http://; the same hosts serve https. */
-function toHttps(url: string): string {
-  return url.replace(/^http:\/\//i, "https://");
+/** Asset hrefs come back as http://; the same hosts serve https. Non-web URLs are dropped. */
+function toHttps(url: string | undefined): string | undefined {
+  return safeHttpUrl(url)?.replace(/^http:\/\//i, "https://");
 }
 
 interface RawSearchLink {
@@ -54,7 +55,7 @@ function normalize(item: RawSearchItem): GalleryItem | null {
     // Descriptions are often HTML (links, <br>, entities).
     description: stripHtml(data.description ?? ""),
     dateCreated: data.date_created ?? "",
-    thumbnailUrl: thumb ? toHttps(thumb) : null,
+    thumbnailUrl: toHttps(thumb) ?? null,
     mediaType: data.media_type,
     keywords: data.keywords ?? [],
     center: data.center,
@@ -67,7 +68,7 @@ export interface SearchGalleryParams {
 }
 
 export async function searchGallery(
-  params: SearchGalleryParams = {}
+  params: SearchGalleryParams = {},
 ): Promise<{ items: GalleryItem[]; page: number; totalHits: number }> {
   const q = params.q?.trim() || DEFAULT_QUERY;
   const page = params.page && params.page > 0 ? Math.min(Math.floor(params.page), GALLERY_MAX_PAGE) : 1;
@@ -108,7 +109,7 @@ export async function getGalleryAsset(nasaId: string): Promise<GalleryAsset> {
 
   const imageUrls = raw.collection.items
     .map((i) => toHttps(i.href))
-    .filter((href) => /\.(jpg|jpeg|png)$/i.test(href));
+    .filter((href): href is string => href !== undefined && /\.(jpg|jpeg|png)$/i.test(href));
 
   return { nasaId, imageUrls };
 }
