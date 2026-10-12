@@ -13,8 +13,8 @@ optimization. `visuals/` builds to a static bundle with no secrets ([0008](0008-
 ## Decision
 
 `.github/workflows/pages.yml` builds `visuals/` with base `/<repo>/` and deploys it to Pages on
-pushes to `main` that touch `visuals/`, or on manual dispatch. The Next app's hosting is
-still open ([delivery](../solution-plan/delivery.md#open-decisions)).
+pushes to `main` that touch `visuals/`, or on manual dispatch. The Next app is hosted on
+Vercel ([0010](0010-host-on-vercel.md)).
 
 ## Consequences
 

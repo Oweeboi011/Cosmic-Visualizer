@@ -5,6 +5,7 @@ import {
   formatUtcDate,
   isValidDateString,
   parseIntParam,
+  safeHttpUrl,
   toIsoDate,
 } from "@/lib/utils";
 
@@ -99,5 +100,16 @@ describe("formatUtcDate", () => {
 
   it("returns null for unparseable input", () => {
     expect(formatUtcDate("not a date")).toBeNull();
+  });
+});
+
+describe("safeHttpUrl", () => {
+  it("keeps http(s) URLs and drops other schemes or garbage", () => {
+    expect(safeHttpUrl(" https://apod.nasa.gov/x.jpg ")).toBe("https://apod.nasa.gov/x.jpg");
+    expect(safeHttpUrl("http://example.com/")).toBe("http://example.com/");
+    expect(safeHttpUrl("javascript:alert(1)")).toBeUndefined();
+    expect(safeHttpUrl("data:image/png;base64,AAAA")).toBeUndefined();
+    expect(safeHttpUrl("not a url")).toBeUndefined();
+    expect(safeHttpUrl(undefined)).toBeUndefined();
   });
 });

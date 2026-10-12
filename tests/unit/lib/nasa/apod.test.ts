@@ -5,19 +5,20 @@ describe("getApod", () => {
   beforeEach(() => {
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () =>
-        new Response(
-          JSON.stringify({
-            date: "2026-01-01",
-            title: "A Distant Galaxy",
-            explanation: "Some explanation text.",
-            media_type: "image",
-            url: "https://apod.nasa.gov/apod/image/test.jpg",
-            hdurl: "https://apod.nasa.gov/apod/image/test_hd.jpg",
-          }),
-          { status: 200 }
-        )
-      )
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({
+              date: "2026-01-01",
+              title: "A Distant Galaxy",
+              explanation: "Some explanation text.",
+              media_type: "image",
+              url: "https://apod.nasa.gov/apod/image/test.jpg",
+              hdurl: "https://apod.nasa.gov/apod/image/test_hd.jpg",
+            }),
+            { status: 200 },
+          ),
+      ),
     );
   });
 
@@ -39,25 +40,61 @@ describe("getApod", () => {
   it("falls back to media type 'other' for unrecognized types", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () =>
-        new Response(
-          JSON.stringify({
-            date: "2026-01-01",
-            title: "Weird media",
-            explanation: "x",
-            media_type: "interactive",
-            url: "https://apod.nasa.gov/x",
-          }),
-          { status: 200 }
-        )
-      )
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({
+              date: "2026-01-01",
+              title: "Weird media",
+              explanation: "x",
+              media_type: "interactive",
+              url: "https://apod.nasa.gov/x",
+            }),
+            { status: 200 },
+          ),
+      ),
     );
     const items = await getApod({ date: "2026-01-01" });
     expect(items[0].mediaType).toBe("other");
   });
 
+  it("drops entries whose url isn't http(s), and an unsafe hdurl", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify([
+              {
+                date: "2026-01-02",
+                title: "Bad",
+                explanation: "x",
+                media_type: "video",
+                url: "javascript:alert(1)",
+              },
+              {
+                date: "2026-01-01",
+                title: "Good",
+                explanation: "x",
+                media_type: "image",
+                url: "https://apod.nasa.gov/a.jpg",
+                hdurl: "javascript:alert(1)",
+              },
+            ]),
+            { status: 200 },
+          ),
+      ),
+    );
+    const items = await getApod({ count: 2 });
+    expect(items.map((i) => i.title)).toEqual(["Good"]);
+    expect(items[0].hdurl).toBeUndefined();
+  });
+
   it("throws a NasaApiError when upstream returns a non-OK status", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 500 })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("", { status: 500 })),
+    );
     await expect(getApod({ date: "2026-01-01" })).rejects.toMatchObject({
       name: "NasaApiError",
       status: 502,

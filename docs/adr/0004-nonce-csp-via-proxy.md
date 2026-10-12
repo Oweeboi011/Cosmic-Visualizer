@@ -18,5 +18,5 @@ page renders dynamically and receives the nonce. Static security headers stay in
 ## Consequences
 
 - No page is statically prerendered. Upstream data is still cached by `fetch` revalidation.
-- Hosting needs a Node runtime ([delivery](../solution-plan/delivery.md#open-decisions)).
+- Hosting needs a Node runtime: Vercel ([0010](0010-host-on-vercel.md)).
 - Covered by `tests/integration/proxy.test.ts` and the e2e CSP check.
